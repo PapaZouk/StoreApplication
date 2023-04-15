@@ -44,7 +44,6 @@ class CustomerDatabaseRepositoryTest {
 
     }
 
-    // TODO
     @Test
     @DisplayName("Should reload data too database successfully")
     void dataShouldBeLoadedToDatabaseSuccessfully() {
@@ -117,7 +116,6 @@ class CustomerDatabaseRepositoryTest {
         assertEquals(producer, result);
     }
 
-    // TODO
     @Test
     @DisplayName("Should create new product successfully")
     void thisProductShouldBeCreatedSuccessfully() {
@@ -167,5 +165,20 @@ class CustomerDatabaseRepositoryTest {
         assertNotNull(result);
         assertEquals(opinion.getStars(), result.getStars());
         assertEquals(opinion.getComment(), result.getComment());
+    }
+
+    @Test
+    @DisplayName("Should create new Producer in database successfully")
+    void shouldCreateNewProducerInDatabase() {
+        // given
+        Producer producer = producerService.create(StoreFixtures.someProducer());
+
+        // when
+        Producer result = producerService.find(producer.getProducerName());
+
+        // then
+        assertNotNull(result);
+        assertEquals(producer.getProducerName(), result.getProducerName());
+        assertEquals(producer.getAddress(), result.getAddress());
     }
 }
