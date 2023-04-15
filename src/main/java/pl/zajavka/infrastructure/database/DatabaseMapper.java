@@ -2,6 +2,7 @@ package pl.zajavka.infrastructure.database;
 
 import org.springframework.stereotype.Component;
 import pl.zajavka.domain.Customer;
+import pl.zajavka.domain.Producer;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -22,7 +23,7 @@ public class DatabaseMapper {
         );
     }
 
-    public Customer map(ResultSet resultSet, int rowNum) throws SQLException {
+    public Customer mapCustomer(ResultSet resultSet, int rowNum) throws SQLException {
         return Customer.builder()
                 .id(resultSet.getLong("id"))
                 .userName(resultSet.getString("user_name"))
@@ -31,6 +32,14 @@ public class DatabaseMapper {
                 .surname(resultSet.getString("surname"))
                 .dateOfBirth(LocalDate.parse(resultSet.getString("date_of_birth")))
                 .telephoneNumber(resultSet.getString("telephone_number"))
+                .build();
+    }
+
+    public Producer mapProducer(ResultSet resultSet, int rowNum) throws SQLException {
+        return Producer.builder()
+                .id(resultSet.getLong("id"))
+                .producerName(resultSet.getString("producer_name"))
+                .address(resultSet.getString("address"))
                 .build();
     }
 }

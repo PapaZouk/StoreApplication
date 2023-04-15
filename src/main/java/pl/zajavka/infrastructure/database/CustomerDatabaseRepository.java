@@ -37,9 +37,8 @@ public class CustomerDatabaseRepository implements CustomerRepository {
     @Override
     public Optional<Customer> find(String email) {
         final var jdbcTemplate = new NamedParameterJdbcTemplate(simpleDriverDataSource);
-//        Map<String, ?> params = Map.of("email", email);
         var params = Map.of("email", email);
-        return Optional.ofNullable(jdbcTemplate.queryForObject(SELECT_ONE_USER_WHERE_EMAIL, params, databaseMapper::map));
+        return Optional.ofNullable(jdbcTemplate.queryForObject(SELECT_ONE_USER_WHERE_EMAIL, params, databaseMapper::mapCustomer));
     }
 
     @Override

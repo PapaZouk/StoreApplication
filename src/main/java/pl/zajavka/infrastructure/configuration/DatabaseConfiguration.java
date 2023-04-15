@@ -16,6 +16,10 @@ public class DatabaseConfiguration {
     public static final String CUSTOMER_TABLE = "customer";
     public static final String CUSTOMER_TABLE_PKEY = "id";
     public static final String SELECT_ONE_USER_WHERE_EMAIL = "SELECT * FROM customer WHERE email = :email";
+    public static final String PRODUCER_TABLE = "producer";
+    public static final String PRODUCER_TABLE_PKEY = "id";
+    public static final String SELECT_ONE_PRODUCER_WHERE_ID = "SELECT * FROM producer WHERE id = :id";
+    public static final String SELECT_ONE_PRODUCER_WHERE_NAME = "SELECT * FROM producer WHERE producer_name = :producer_name";
 
     @Bean
     public SimpleDriverDataSource simpleDriverDataSource() {

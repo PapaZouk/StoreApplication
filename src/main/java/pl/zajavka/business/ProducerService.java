@@ -22,4 +22,16 @@ public class ProducerService {
         producerDatabaseRepository.removeAll();
         productService.removeAll();
     }
+
+    @Transactional
+    public Producer find(Long id) {
+        return producerDatabaseRepository.find(id)
+                .orElseThrow(() -> new RuntimeException("Producer with ID: [%s] is missing".formatted(id)));
+    }
+
+    @Transactional
+    public Producer find(String producerName) {
+        return producerDatabaseRepository.find(producerName)
+                .orElseThrow(() -> new RuntimeException("Producer with name: [%s] is missing".formatted(producerName)));
+    }
 }

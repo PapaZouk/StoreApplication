@@ -34,6 +34,7 @@ class CustomerDatabaseRepositoryTest {
         assertNotNull(productService);
         assertNotNull(producerService);
         customerService.removeAll();
+        producerService.removeAll();
 
 //        reloadDataService.loadRandomData();
 
@@ -56,5 +57,19 @@ class CustomerDatabaseRepositoryTest {
         // then
         assertNotNull(result);
         assertEquals(customer, result);
+    }
+
+    @Test
+    @DisplayName("Should create new producer successfully")
+    void thisProducerShouldBeCreatedSuccessfully() {
+        // given, when
+        final Producer producer = producerService.create(StoreFixtures.someProducer());
+
+        // when
+        Producer result = producerService.find(producer.getId());
+
+        // then
+        assertNotNull(result);
+        assertEquals(producer, result);
     }
 }
