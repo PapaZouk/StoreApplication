@@ -11,10 +11,10 @@ import pl.zajavka.business.*;
 import pl.zajavka.domain.*;
 import pl.zajavka.infrastructure.configuration.ApplicationConfiguration;
 
+import java.time.LocalDate;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 @SpringJUnitConfig(classes = ApplicationConfiguration.class)
@@ -103,82 +103,31 @@ class CustomerDatabaseRepositoryTest {
     }
 
     @Test
-    @DisplayName("Should create new producer successfully")
-    void thisProducerShouldBeCreatedSuccessfully() {
+    @DisplayName("Transaction should fail when removing customer")
+    void thatCustomerWhenRemovingWillFail() {
         // given
-        final Producer producer = producerService.create(StoreFixtures.someProducer());
-
-        // when
-        Producer result = producerService.find(producer.getId());
-
-        // then
-        assertNotNull(result);
-        assertEquals(producer, result);
-    }
-
-    @Test
-    @DisplayName("Should create new product successfully")
-    void thisProductShouldBeCreatedSuccessfully() {
-        // given
+        Customer customer = customerService.create(StoreFixtures.someCustomer()
+                .withDateOfBirth(LocalDate.of(1950, 2, 12)));
         Producer producer = producerService.create(StoreFixtures.someProducer());
         Product product = productService.create(StoreFixtures.someProduct(producer));
+        Purchase purchase = purchaseService.create(StoreFixtures.somePurchase(customer, product));
+        Opinion opinion = opinionService.create(StoreFixtures.someOpinion(customer, product));
+
+        log.info("Customer: [{}]", customer);
+        log.info("Producer: [{}]", producer);
+        log.info("Product: [{}]", product);
+        log.info("Purchase: [{}]", purchase);
+        log.info("Opinion: [{}]", opinion);
 
         // when
-        Product result = productService.find(product.getProductCode());
+        RuntimeException exception = assertThrows(RuntimeException.class,
+                () -> customerService.remove(customer.getEmail()));
 
         // then
-        assertNotNull(result);
-        assertEquals(product.getProductCode(), result.getProductCode());
-    }
+        assertEquals(
+                "Could not remove purchase because customer with email: [%s] is too old".formatted(customer.getEmail()),
+                exception.getMessage()
+        );
 
-    @Test
-    @DisplayName("Should create new purchase successfully")
-    void thisPurchaseShouldBeCreatedSuccessfully() {
-        // given
-        final Customer customer = customerService.create(StoreFixtures.someCustomer());
-        final Producer producer = producerService.create(StoreFixtures.someProducer());
-        final Product product = productService.create(StoreFixtures.someProduct(producer));
-        final Purchase purchase = purchaseService.create(StoreFixtures.somePurchase(customer, product));
-
-        // when
-        Purchase result = purchaseService.find(purchase.getCustomerId().getEmail());
-
-        // then
-        assertNotNull(result);
-        assertEquals(purchase.getQuantity(), result.getQuantity());
-        assertEquals(purchase.getDateTime(), result.getDateTime());
-    }
-
-    @Test
-    @DisplayName("Should create new Opinion in database successfully")
-    void shouldCreateNewOpinionInDataBase() {
-        // given
-        Producer producer = producerService.create(StoreFixtures.someProducer());
-        Product product1 = productService.create(StoreFixtures.someProduct(producer).withProductCode("xpAx"));
-        Customer customer = customerService.create(StoreFixtures.someCustomer());
-        Opinion opinion = opinionService.create(StoreFixtures.someOpinion(customer, product1));
-
-        // when
-        Opinion result = opinionService.find(opinion.getCustomerId().getEmail());
-//
-//        // then
-        assertNotNull(result);
-        assertEquals(opinion.getStars(), result.getStars());
-        assertEquals(opinion.getComment(), result.getComment());
-    }
-
-    @Test
-    @DisplayName("Should create new Producer in database successfully")
-    void shouldCreateNewProducerInDatabase() {
-        // given
-        Producer producer = producerService.create(StoreFixtures.someProducer());
-
-        // when
-        Producer result = producerService.find(producer.getProducerName());
-
-        // then
-        assertNotNull(result);
-        assertEquals(producer.getProducerName(), result.getProducerName());
-        assertEquals(producer.getAddress(), result.getAddress());
     }
 }

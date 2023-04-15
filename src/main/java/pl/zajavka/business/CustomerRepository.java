@@ -13,4 +13,6 @@ public interface CustomerRepository {
     void removeAll();
 
     List<Customer> findAll();
+
+    int remove(String email);
 }

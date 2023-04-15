@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.zajavka.domain.Customer;
 import pl.zajavka.infrastructure.database.CustomerDatabaseRepository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Slf4j
@@ -37,5 +38,17 @@ public class CustomerService {
 
     public List<Customer> findAll() {
         return customerDatabaseRepository.findAll();
+    }
+
+    @Transactional
+    public int remove(String email) {
+//        opinionService.removeAll(email);
+//        purchaseService.removeAll(email);
+        Customer customer = find(email);
+        if (LocalDate.now().getYear() - customer.getDateOfBirth().getYear() > 40) {
+            throw new RuntimeException(
+                    "Could not remove purchase because customer with email: [%s] is too old".formatted(email));
+        }
+        return customerDatabaseRepository.remove(email);
     }
 }

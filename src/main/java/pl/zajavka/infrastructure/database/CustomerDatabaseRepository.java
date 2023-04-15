@@ -55,4 +55,13 @@ public class CustomerDatabaseRepository implements CustomerRepository {
         return new JdbcTemplate(simpleDriverDataSource)
                 .query(SELECT_ALL_CUSTOMERS, new BeanPropertyRowMapper<>(Customer.class));
     }
+
+    @Override
+    public int remove(String email) {
+        final var jdbcTemplate = new NamedParameterJdbcTemplate(simpleDriverDataSource);
+        var params = Map.of("email", email);
+        int removedResult = jdbcTemplate.update(DELETE_FROM_CUSTOMER_WHERE_EMAIL, params);
+        log.info("Rows removed: [{}]", removedResult);
+        return removedResult;
+    }
 }

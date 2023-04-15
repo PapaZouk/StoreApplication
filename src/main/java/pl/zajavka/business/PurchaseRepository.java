@@ -10,4 +10,8 @@ public interface PurchaseRepository {
     void removeAll();
 
     Optional<Purchase> find(String email);
+
+    void remove(String email);
+
+    void removeAll(String email);
 }

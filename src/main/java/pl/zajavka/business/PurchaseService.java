@@ -13,6 +13,7 @@ import pl.zajavka.infrastructure.database.PurchaseDatabaseRepository;
 public class PurchaseService {
 
     private PurchaseDatabaseRepository purchaseDatabaseRepository;
+
     public void removeAll() {
         purchaseDatabaseRepository.removeAll();
     }
@@ -25,5 +26,15 @@ public class PurchaseService {
     public Purchase find(String email) {
         return purchaseDatabaseRepository.find(email)
                 .orElseThrow(() -> new RuntimeException("Purchase from user with email: [%s] is missing".formatted(email)));
+    }
+
+    @Transactional
+    public void remove(String email) {
+        purchaseDatabaseRepository.remove(email);
+    }
+
+
+    public void removeAll(String email) {
+        purchaseDatabaseRepository.removeAll(email);
     }
 }

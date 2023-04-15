@@ -23,10 +23,16 @@ public class DatabaseConfiguration {
     public static final String OPINION_TABLE_PKEY = "id";
 
     public static final String DELETE_FROM_CUSTOMER = "DELETE FROM customer WHERE 1 = 1";
+    public static final String DELETE_FROM_CUSTOMER_WHERE_EMAIL = "DELETE FROM customer WHERE email = :email";
+    public static final String DELETE_FROM_OPINION_WHERE_EMAIL = "DELETE FROM opinion WHERE email IN " +
+            "(SELECT C.email FROM customer C WHERE email = :email)";
+    public static final String DELETE_FROM_PURCHASE_WHERE_EMAIL = "DELETE FROM purchase WHERE email IN " +
+            "(SELECT C.email FROM customer C WHERE email = :email)";
     public static final String SELECT_ONE_USER_WHERE_EMAIL = "SELECT * FROM customer WHERE email = :email";
     public static final String SELECT_ONE_PRODUCER_WHERE_ID = "SELECT * FROM producer WHERE id = :id";
     public static final String SELECT_ONE_PRODUCER_WHERE_NAME = "SELECT * FROM producer WHERE producer_name = :producer_name";
     public static final String SELECT_ALL_CUSTOMERS = "SELECT * FROM customer";
+    public static final String CUSTOMER_WITH_EMAIL_IS_TOO_OLD = "Could not remove purchase because customer with email: [%s] is too old";
 
     @Bean
     public SimpleDriverDataSource simpleDriverDataSource() {
