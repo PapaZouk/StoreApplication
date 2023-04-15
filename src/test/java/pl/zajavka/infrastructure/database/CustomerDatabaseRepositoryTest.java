@@ -142,11 +142,13 @@ class CustomerDatabaseRepositoryTest {
         final Product product = productService.create(StoreFixtures.someProduct(producer));
         final Purchase purchase = purchaseService.create(StoreFixtures.somePurchase(customer, product));
 
-//        // when
-//        Purchase result = purchaseService.find(purchase.getCustomerId().getEmail());
-//
-//        // then
-//        assertNotNull(result);
+        // when
+        Purchase result = purchaseService.find(purchase.getCustomerId().getEmail());
+
+        // then
+        assertNotNull(result);
+        assertEquals(purchase.getQuantity(), result.getQuantity());
+        assertEquals(purchase.getDateTime(), result.getDateTime());
     }
 
     @Test

@@ -31,10 +31,10 @@ public class DatabaseMapper {
 
     public Map<String, ?> mapPurchase(Purchase purchase) {
         return Map.of(
-                "customerId", purchase.getCustomerId().getId(),
-                "productId", purchase.getProductId().getId(),
+                "customer_id", purchase.getCustomerId().getId(),
+                "product_id", purchase.getProductId().getId(),
                 "quantity", purchase.getQuantity(),
-                "dateTime", DATE_TIME_FORMATTER.format(purchase.getDateTime())
+                "date_time", DATE_TIME_FORMATTER.format(purchase.getDateTime())
         );
     }
 
@@ -66,6 +66,7 @@ public class DatabaseMapper {
         );
     }
 
+    @SuppressWarnings("unused")
     public Product mapProduct(ResultSet rs, int rowNum) throws SQLException {
         return Product.builder()
                 .id(rs.getLong("id"))
@@ -78,6 +79,7 @@ public class DatabaseMapper {
                 .build();
     }
 
+    @SuppressWarnings("unused")
     public Opinion mapOpinion(ResultSet rs, int rowNum) throws SQLException {
         return Opinion.builder()
                 .id(rs.getLong("id"))
