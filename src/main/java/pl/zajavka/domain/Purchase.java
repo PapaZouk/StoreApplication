@@ -8,6 +8,7 @@ import java.time.OffsetDateTime;
 @With
 @Builder
 @ToString
+@NoArgsConstructor
 @AllArgsConstructor
 public class Purchase {
     private Long id;

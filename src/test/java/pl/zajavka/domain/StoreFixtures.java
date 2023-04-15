@@ -29,7 +29,7 @@ public class StoreFixtures {
 
     public static Product someProduct(Producer producer) {
         return Product.builder()
-                .productCode("LoCCXacXk")
+                .productCode("X")
                 .productName("someProductName")
                 .productPrice(BigDecimal.valueOf(92.99))
                 .adultsOnly(false)

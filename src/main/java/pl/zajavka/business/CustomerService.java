@@ -7,6 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.zajavka.domain.Customer;
 import pl.zajavka.infrastructure.database.CustomerDatabaseRepository;
 
+import java.util.List;
+
 @Slf4j
 @Service
 @AllArgsConstructor
@@ -31,5 +33,9 @@ public class CustomerService {
     public Customer find(String email) {
         return customerDatabaseRepository.find(email)
                 .orElseThrow(() -> new RuntimeException("Customer with email: [%s] is missing".formatted(email)));
+    }
+
+    public List<Customer> findAll() {
+        return customerDatabaseRepository.findAll();
     }
 }

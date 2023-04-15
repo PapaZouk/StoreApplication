@@ -2,6 +2,7 @@ package pl.zajavka.infrastructure.database;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -10,7 +11,9 @@ import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.stereotype.Repository;
 import pl.zajavka.business.CustomerRepository;
 import pl.zajavka.domain.Customer;
+import pl.zajavka.infrastructure.configuration.DatabaseConfiguration;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -45,5 +48,11 @@ public class CustomerDatabaseRepository implements CustomerRepository {
     public void removeAll() {
         int removeResult = new JdbcTemplate(simpleDriverDataSource).update(DELETE_FROM_CUSTOMER);
         log.warn("Rows removed: [{}]", removeResult);
+    }
+
+    @Override
+    public List<Customer> findAll() {
+        return new JdbcTemplate(simpleDriverDataSource)
+                .query(DatabaseConfiguration.SELECT_ALL_CUSTOMERS, new BeanPropertyRowMapper<>(Customer.class));
     }
 }

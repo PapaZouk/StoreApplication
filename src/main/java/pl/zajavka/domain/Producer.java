@@ -6,6 +6,7 @@ import lombok.*;
 @With
 @Builder
 @ToString
+@NoArgsConstructor
 @AllArgsConstructor
 public class Producer {
     private Long id;

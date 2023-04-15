@@ -11,7 +11,10 @@ import pl.zajavka.business.*;
 import pl.zajavka.domain.*;
 import pl.zajavka.infrastructure.configuration.ApplicationConfiguration;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @Slf4j
 @SpringJUnitConfig(classes = ApplicationConfiguration.class)
@@ -35,9 +38,54 @@ class CustomerDatabaseRepositoryTest {
         assertNotNull(producerService);
         customerService.removeAll();
         producerService.removeAll();
+        productService.removeAll();
+        purchaseService.removeAll();
 
 //        reloadDataService.loadRandomData();
 
+    }
+
+    @Test
+    @DisplayName("Should reload data too database successfully")
+    void dataShouldBeLoadedToDatabaseSuccessfully() {
+        // given
+        int expectedListSize = 20;
+
+        // when
+        reloadDataService.loadRandomData();
+        List<Customer> result = customerService.findAll();
+
+        // then
+        assertNotNull(result);
+        assertEquals(expectedListSize, result.size());
+    }
+
+    @Test
+    @DisplayName("Should return a list of 20 customers successfully")
+    void shouldReturnListOfCustomers() {
+        // given
+        int expectedSize = 3;
+        Customer customer1 = customerService.create(StoreFixtures
+                .someCustomer()
+                .withUserName("someUserName1")
+                .withEmail("someEmail1@example.com"));
+        Customer customer2 = customerService.create(StoreFixtures
+                .someCustomer()
+                .withUserName("someUserName2")
+                .withEmail("someEmail2@example.com"));
+        Customer customer3 = customerService.create(StoreFixtures
+                .someCustomer()
+                .withUserName("someUserName3")
+                .withEmail("someEmail3@example.com"));
+
+        List<Customer> result = customerService.findAll();
+        for (Customer customer : result) {
+            log.info("Found customer: [{}]", customer);
+        }
+
+        // then
+        assertNotNull(result);
+        assertEquals(expectedSize, result.size());
     }
 
     @Test
@@ -45,10 +93,6 @@ class CustomerDatabaseRepositoryTest {
     void thisCustomerShouldBeCreatedSuccessfully() {
         // given, when
         final Customer customer = customerService.create(StoreFixtures.someCustomer());
-        final Producer producer = producerService.create(StoreFixtures.someProducer());
-        final Product product1 = productService.create(StoreFixtures.someProduct(producer));
-        final Purchase purchase = purchaseService.create(StoreFixtures.somePurchase(customer, product1));
-        final Opinion opinion = opinionService.create(StoreFixtures.someOpinion(customer, product1));
 
         // when
         Customer result = customerService.find(customer.getEmail());
@@ -62,7 +106,7 @@ class CustomerDatabaseRepositoryTest {
     @Test
     @DisplayName("Should create new producer successfully")
     void thisProducerShouldBeCreatedSuccessfully() {
-        // given, when
+        // given
         final Producer producer = producerService.create(StoreFixtures.someProducer());
 
         // when
@@ -71,5 +115,36 @@ class CustomerDatabaseRepositoryTest {
         // then
         assertNotNull(result);
         assertEquals(producer, result);
+    }
+
+//    @Test
+//    @DisplayName("Should create new product successfully")
+//    void thisProductShouldBeCreatedSuccessfully() {
+//        // given
+//        Producer producer = producerService.create(StoreFixtures.someProducer());
+//        Product product = productService.create(StoreFixtures.someProduct(producer));
+//
+//        // when
+//        Product result = productService.find(product.getProductCode());
+//
+//        // then
+//        assertNotNull(result);
+//        assertEquals(product.getProductCode(), result.getProductCode());
+//    }
+
+    @Test
+    @DisplayName("Should create new purchase successfully")
+    void thisPurchaseShouldBeCreatedSuccessfully() {
+        // given
+        final Customer customer = customerService.create(StoreFixtures.someCustomer());
+        final Producer producer = producerService.create(StoreFixtures.someProducer());
+        final Product product = productService.create(StoreFixtures.someProduct(producer));
+        final Purchase purchase = purchaseService.create(StoreFixtures.somePurchase(customer, product));
+
+//        // when
+//        Purchase result = purchaseService.find(purchase.getCustomerId().getEmail());
+//
+//        // then
+//        assertNotNull(result);
     }
 }

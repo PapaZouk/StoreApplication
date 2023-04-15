@@ -8,6 +8,7 @@ import java.time.LocalDate;
 @With
 @Builder
 @ToString
+@NoArgsConstructor
 @AllArgsConstructor
 public class Customer {
     private Long id;

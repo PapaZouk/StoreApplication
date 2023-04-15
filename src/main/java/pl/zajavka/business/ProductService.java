@@ -20,4 +20,9 @@ public class ProductService {
     public void removeAll() {
         productDatabaseRepository.removeAll();
     }
+
+    public Product find(String productCode) {
+        return productDatabaseRepository.find(productCode)
+                .orElseThrow(() -> new RuntimeException("Product with code: [%s] is missing".formatted(productCode)));
+    }
 }

@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 @With
 @Builder
 @ToString
+@NoArgsConstructor
 @AllArgsConstructor
 public class Product {
     private Long id;

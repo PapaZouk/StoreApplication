@@ -21,4 +21,9 @@ public class PurchaseService {
     public Purchase create(Purchase purchase) {
         return purchaseDatabaseRepository.create(purchase);
     }
+
+    public Purchase find(String email) {
+        return purchaseDatabaseRepository.find(email)
+                .orElseThrow(() -> new RuntimeException("Purchase from user with email: [%s] is missing".formatted(email)));
+    }
 }
