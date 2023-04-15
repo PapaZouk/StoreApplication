@@ -4,18 +4,19 @@ import lombok.AllArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.stereotype.Repository;
 import pl.zajavka.business.PurchaseRepository;
 import pl.zajavka.domain.Purchase;
-import pl.zajavka.infrastructure.configuration.DatabaseConfiguration;
 
 import java.util.Map;
 import java.util.Optional;
 
-import static pl.zajavka.infrastructure.configuration.DatabaseConfiguration.*;
+import static pl.zajavka.infrastructure.configuration.DatabaseConfiguration.PURCHASE_TABLE;
+import static pl.zajavka.infrastructure.configuration.DatabaseConfiguration.PURCHASE_TABLE_PKEY;
 
 @Repository
 @AllArgsConstructor
@@ -33,9 +34,10 @@ public class PurchaseDatabaseRepository implements PurchaseRepository {
                 .withTableName(PURCHASE_TABLE)
                 .usingGeneratedKeyColumns(PURCHASE_TABLE_PKEY);
 
-        Map<String, ?> params = databaseMapper.mapPurchase(purchase);
-        Number purchaseId = jdbcInsert.executeAndReturnKey(new BeanPropertySqlParameterSource(params));
-        return purchase.withId(purchaseId.longValue());
+//        Map<String, ?> params = databaseMapper.mapPurchase(purchase);
+//        Number purchaseId = jdbcInsert.executeAndReturnKey(new BeanPropertySqlParameterSource(params));
+        Number purchaseId = jdbcInsert.executeAndReturnKey(new BeanPropertySqlParameterSource(purchase));
+        return purchase.withId((long) purchaseId.intValue());
     }
 
     @Override

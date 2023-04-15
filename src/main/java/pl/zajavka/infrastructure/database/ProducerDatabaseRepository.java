@@ -28,8 +28,9 @@ public class ProducerDatabaseRepository implements ProducerRepository {
         SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(simpleDriverDataSource)
                 .withTableName(PRODUCER_TABLE)
                 .usingGeneratedKeyColumns(PRODUCER_TABLE_PKEY);
-        Number producerId = jdbcInsert.executeAndReturnKey(new BeanPropertySqlParameterSource(producer));
-        return producer.withId(producerId.longValue());
+        Map<String, ?> params = databaseMapper.mapProducer(producer);
+        Number producerId = jdbcInsert.executeAndReturnKey(params);
+        return producer.withId((long) producerId.intValue());
     }
 
     @Override

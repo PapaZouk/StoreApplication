@@ -3,6 +3,7 @@ package pl.zajavka.business;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.zajavka.domain.*;
 import pl.zajavka.infrastructure.database.*;
 
@@ -18,6 +19,7 @@ public class RandomDataService {
     private final OpinionDatabaseRepository opinionRepository;
     private final PurchaseDatabaseRepository purchaseRepository;
 
+    @Transactional
     public void create () {
         Customer customer = customerRepository.create(randomDataPreparationService.createCustomer());
         Producer producer = producerRepository.create(randomDataPreparationService.createProducer());

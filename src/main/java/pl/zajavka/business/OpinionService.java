@@ -21,4 +21,8 @@ public class OpinionService {
     public Opinion create(Opinion opinion) {
         return opinionDatabaseRepository.create(opinion);
     }
+
+    public Opinion find(String email) {
+        return opinionDatabaseRepository.find(email);
+    }
 }

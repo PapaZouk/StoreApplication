@@ -34,7 +34,7 @@ public class CustomerDatabaseRepository implements CustomerRepository {
                 .usingGeneratedKeyColumns(CUSTOMER_TABLE_PKEY);
 
         Number customerId = jdbcInsert.executeAndReturnKey(new BeanPropertySqlParameterSource(customer));
-        return customer.withId(customerId.longValue());
+        return customer.withId((long) customerId.intValue());
     }
 
     @Override
@@ -53,6 +53,6 @@ public class CustomerDatabaseRepository implements CustomerRepository {
     @Override
     public List<Customer> findAll() {
         return new JdbcTemplate(simpleDriverDataSource)
-                .query(DatabaseConfiguration.SELECT_ALL_CUSTOMERS, new BeanPropertyRowMapper<>(Customer.class));
+                .query(SELECT_ALL_CUSTOMERS, new BeanPropertyRowMapper<>(Customer.class));
     }
 }

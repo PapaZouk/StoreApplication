@@ -11,19 +11,21 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Configuration
 @EnableTransactionManagement
 public class DatabaseConfiguration {
-
-    public static final String DELETE_FROM_CUSTOMER = "DELETE FROM customer WHERE 1 = 1";
     public static final String CUSTOMER_TABLE = "customer";
     public static final String CUSTOMER_TABLE_PKEY = "id";
-    public static final String SELECT_ONE_USER_WHERE_EMAIL = "SELECT * FROM customer WHERE email = :email";
     public static final String PRODUCER_TABLE = "producer";
     public static final String PRODUCER_TABLE_PKEY = "id";
-    public static final String SELECT_ONE_PRODUCER_WHERE_ID = "SELECT * FROM producer WHERE id = :id";
-    public static final String SELECT_ONE_PRODUCER_WHERE_NAME = "SELECT * FROM producer WHERE producer_name = :producer_name";
     public static final String PURCHASE_TABLE = "purchase";
     public static final String PURCHASE_TABLE_PKEY = "id";
     public static final String PRODUCT_TABLE = "product";
     public static final String PRODUCT_TABLE_PKEY = "id";
+    public static final String OPINION_TABLE = "opinion";
+    public static final String OPINION_TABLE_PKEY = "id";
+
+    public static final String DELETE_FROM_CUSTOMER = "DELETE FROM customer WHERE 1 = 1";
+    public static final String SELECT_ONE_USER_WHERE_EMAIL = "SELECT * FROM customer WHERE email = :email";
+    public static final String SELECT_ONE_PRODUCER_WHERE_ID = "SELECT * FROM producer WHERE id = :id";
+    public static final String SELECT_ONE_PRODUCER_WHERE_NAME = "SELECT * FROM producer WHERE producer_name = :producer_name";
     public static final String SELECT_ALL_CUSTOMERS = "SELECT * FROM customer";
 
     @Bean

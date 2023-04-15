@@ -37,14 +37,14 @@ class CustomerDatabaseRepositoryTest {
         assertNotNull(productService);
         assertNotNull(producerService);
         customerService.removeAll();
-        producerService.removeAll();
+        opinionService.removeAll();
         productService.removeAll();
+        producerService.removeAll();
         purchaseService.removeAll();
-
-//        reloadDataService.loadRandomData();
 
     }
 
+    // TODO
     @Test
     @DisplayName("Should reload data too database successfully")
     void dataShouldBeLoadedToDatabaseSuccessfully() {
@@ -117,20 +117,21 @@ class CustomerDatabaseRepositoryTest {
         assertEquals(producer, result);
     }
 
-//    @Test
-//    @DisplayName("Should create new product successfully")
-//    void thisProductShouldBeCreatedSuccessfully() {
-//        // given
-//        Producer producer = producerService.create(StoreFixtures.someProducer());
-//        Product product = productService.create(StoreFixtures.someProduct(producer));
-//
-//        // when
-//        Product result = productService.find(product.getProductCode());
-//
-//        // then
-//        assertNotNull(result);
-//        assertEquals(product.getProductCode(), result.getProductCode());
-//    }
+    // TODO
+    @Test
+    @DisplayName("Should create new product successfully")
+    void thisProductShouldBeCreatedSuccessfully() {
+        // given
+        Producer producer = producerService.create(StoreFixtures.someProducer());
+        Product product = productService.create(StoreFixtures.someProduct(producer));
+
+        // when
+        Product result = productService.find(product.getProductCode());
+
+        // then
+        assertNotNull(result);
+        assertEquals(product.getProductCode(), result.getProductCode());
+    }
 
     @Test
     @DisplayName("Should create new purchase successfully")
@@ -146,5 +147,23 @@ class CustomerDatabaseRepositoryTest {
 //
 //        // then
 //        assertNotNull(result);
+    }
+
+    @Test
+    @DisplayName("Should create new Opinion in database successfully")
+    void shouldCreateNewOpinionInDataBase() {
+        // given
+        Producer producer = producerService.create(StoreFixtures.someProducer());
+        Product product1 = productService.create(StoreFixtures.someProduct(producer).withProductCode("xpAx"));
+        Customer customer = customerService.create(StoreFixtures.someCustomer());
+        Opinion opinion = opinionService.create(StoreFixtures.someOpinion(customer, product1));
+
+        // when
+        Opinion result = opinionService.find(opinion.getCustomerId().getEmail());
+//
+//        // then
+        assertNotNull(result);
+        assertEquals(opinion.getStars(), result.getStars());
+        assertEquals(opinion.getComment(), result.getComment());
     }
 }
