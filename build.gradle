@@ -7,12 +7,12 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '17'
 
 ext {
-    logbackVersion = '1.4.1'
-    lombokVersion = '1.18.24'
-    junitVersion = '5.9.0'
-    mockitoVersion = '4.8.0'
-    springVersion = '5.3.23'
-    postgresqlDriverVersion = '42.5.0'
+    logbackVersion = '1.4.6'
+    lombokVersion = '1.18.26'
+    junitVersion = '5.9.2'
+    mockitoVersion = '5.2.0'
+    springVersion = '6.0.6'
+    postgresqlDriverVersion = '42.5.4'
 }
 
 repositories {
@@ -21,6 +21,7 @@ repositories {
 
 dependencies {
     implementation "ch.qos.logback:logback-classic:$logbackVersion"
+    implementation 'org.junit.jupiter:junit-jupiter:5.9.2'
 
     compileOnly "org.projectlombok:lombok:$lombokVersion"
     annotationProcessor "org.projectlombok:lombok:$lombokVersion"
