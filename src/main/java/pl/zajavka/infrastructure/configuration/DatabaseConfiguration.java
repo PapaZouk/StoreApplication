@@ -12,6 +12,11 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement
 public class DatabaseConfiguration {
 
+    public static final String DELETE_FROM_CUSTOMER = "DELETE FROM customer WHERE 1 = 1";
+    public static final String CUSTOMER_TABLE = "customer";
+    public static final String CUSTOMER_TABLE_PKEY = "id";
+    public static final String SELECT_ONE_USER_WHERE_EMAIL = "SELECT * FROM customer WHERE email = :email";
+
     @Bean
     public SimpleDriverDataSource simpleDriverDataSource() {
         SimpleDriverDataSource dataSource = new SimpleDriverDataSource();

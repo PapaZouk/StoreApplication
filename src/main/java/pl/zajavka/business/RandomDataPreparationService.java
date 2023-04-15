@@ -62,7 +62,7 @@ public class RandomDataPreparationService {
         return Purchase.builder()
                 .customerId(customer)
                 .productId(product)
-                .quantity(new Random().nextInt(1, 50))
+                .quantity(new Random().nextInt(1, 51))
                 .dateTime(OffsetDateTime.of(2010, 8, 12, 14, 55, 39, 4,
                         ZoneOffset.ofHours(4)))
                 .build();
