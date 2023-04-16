@@ -25,12 +25,12 @@ class RandomDataPreparationServiceTest {
     @DisplayName("Should create random user successfully")
     void testCreateCustomer() {
         // given
-        LocalDate expectedBirthDay = LocalDate.of(1990, 11, 11);
+        String expectedSurname = "surname";
         // when
         Customer customer = dataPreparationService.createCustomer();
         // then
         assertNotNull(customer);
-        assertEquals(expectedBirthDay, customer.getDateOfBirth());
+        assertEquals(expectedSurname, customer.getSurname());
     }
 
     @Test

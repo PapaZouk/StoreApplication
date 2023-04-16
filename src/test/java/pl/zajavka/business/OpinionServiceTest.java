@@ -9,13 +9,13 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pl.zajavka.domain.Opinion;
-import pl.zajavka.domain.Purchase;
 import pl.zajavka.domain.StoreFixtures;
 import pl.zajavka.infrastructure.database.OpinionDatabaseRepository;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @Slf4j

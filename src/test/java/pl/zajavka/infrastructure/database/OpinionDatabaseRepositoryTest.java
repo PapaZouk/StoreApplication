@@ -25,6 +25,7 @@ public class OpinionDatabaseRepositoryTest {
     private OpinionService opinionService;
     private ProducerService producerService;
     private ProductService productService;
+    private PurchaseService purchaseService;
     private CustomerService customerService;
 
     @BeforeEach
@@ -32,6 +33,7 @@ public class OpinionDatabaseRepositoryTest {
         assertNotNull(reloadDataService);
         assertNotNull(opinionService);
         assertNotNull(producerService);
+        assertNotNull(productService);
         assertNotNull(productService);
         assertNotNull(customerService);
 
@@ -45,6 +47,7 @@ public class OpinionDatabaseRepositoryTest {
         Producer producer = producerService.create(StoreFixtures.someProducer());
         Product product1 = productService.create(StoreFixtures.someProduct(producer).withProductCode("xpAx"));
         Customer customer = customerService.create(StoreFixtures.someCustomer());
+        Purchase purchase = purchaseService.create(StoreFixtures.somePurchase(customer, product1));
         Opinion opinion = opinionService.create(StoreFixtures.someOpinion(customer, product1));
 
         // when
@@ -63,6 +66,7 @@ public class OpinionDatabaseRepositoryTest {
         Customer customer = customerService.create(StoreFixtures.someCustomer());
         Producer producer = producerService.create(StoreFixtures.someProducer());
         Product product = productService.create(StoreFixtures.someProduct(producer));
+        Purchase purchase = purchaseService.create(StoreFixtures.somePurchase(customer, product));
         Opinion opinion = opinionService.create(StoreFixtures.someOpinion(customer, product));
 
         // when
@@ -78,7 +82,7 @@ public class OpinionDatabaseRepositoryTest {
     void theseOpinionsWillBeRemovedIfStarsLowerThan4() {
         // given
         reloadDataService.removeAllDatabaseData();
-        reloadDataService.loadRandomData();
+        reloadDataService.reloadData();
 
         int resultFound = opinionService.findAll(1, 4).size();
 
@@ -107,6 +111,9 @@ public class OpinionDatabaseRepositoryTest {
         Product product1 = productService.create(StoreFixtures.someProduct(producer));
         Product product2 = productService.create(StoreFixtures.someProduct(producer)
                 .withProductCode("xPfx"));
+
+        Purchase purchase1 = purchaseService.create(StoreFixtures.somePurchase(customer1, product1));
+        Purchase purchase2 = purchaseService.create(StoreFixtures.somePurchase(customer2, product2));
 
         Opinion opinion1 = opinionService.create(
                 StoreFixtures.someOpinion(customer1, product1)

@@ -25,9 +25,9 @@ public class ReloadDataService {
     private ReloadDataRepository reloadDataRepository;
 
     @Transactional
-    public void loadRandomData() {
+    public void loadRandomData(int num) {
         removeAllDatabaseData();
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < num; i++) {
             randomDataService.create();
         }
         log.info("Successfully loaded 20 random data");

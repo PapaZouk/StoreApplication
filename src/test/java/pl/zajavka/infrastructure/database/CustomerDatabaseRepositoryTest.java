@@ -51,7 +51,7 @@ class CustomerDatabaseRepositoryTest {
         int expectedListSize = 20;
 
         // when
-        reloadDataService.loadRandomData();
+        reloadDataService.loadRandomData(20);
         List<Customer> result = customerService.findAll();
 
         // then
@@ -109,8 +109,8 @@ class CustomerDatabaseRepositoryTest {
         Customer expected = customerService.create(StoreFixtures.someCustomer());
         Producer producer = producerService.create(StoreFixtures.someProducer());
         Product product = productService.create(StoreFixtures.someProduct(producer));
-        Opinion opinion = opinionService.create(StoreFixtures.someOpinion(expected, product));
         Purchase purchase = purchaseService.create(StoreFixtures.somePurchase(expected, product));
+        Opinion opinion = opinionService.create(StoreFixtures.someOpinion(expected, product));
 
         Customer actual = customerService.find(expected.getEmail());
 
@@ -149,7 +149,7 @@ class CustomerDatabaseRepositoryTest {
 
         // then
         assertEquals(
-                "Could not remove purchase because customer with email: [%s] is too old".formatted(customer.getEmail()),
+                "Could not remove purchase because customer age with email: [%s] is over 40".formatted(customer.getEmail()),
                 exception.getMessage()
         );
     }
@@ -159,14 +159,19 @@ class CustomerDatabaseRepositoryTest {
     void thatCustomersWithStarsLessThan4ShouldBeRemoved() {
         // given
         reloadDataService.removeAllDatabaseData();
-        reloadDataService.loadRandomData();
+        reloadDataService.loadRandomData(50);
+//        reloadDataService.reloadData();
 
-        int numberOfOpinionsWithStarsLessThan4 = opinionService.findAll(1, 3).size();
+        var opinions = opinionService.findAll(1, 3).stream()
+                .map(opinion -> customerService.find(opinion.getCustomerId().getId()))
+                .filter(customer -> LocalDate.now().getYear() - customer.getDateOfBirth().getYear() <= 40)
+                .distinct()
+                .toList();
 
         // when
         int result = customerService.removeWithStars(1, 3);
 
         // then
-        assertEquals(numberOfOpinionsWithStarsLessThan4, result);
+        assertEquals(opinions.size(), result);
     }
 }

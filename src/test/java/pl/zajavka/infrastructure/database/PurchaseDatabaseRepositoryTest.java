@@ -66,6 +66,7 @@ public class PurchaseDatabaseRepositoryTest {
                 .withDateOfBirth(LocalDate.of(1950, 5, 20)));
         final var producer = producerService.create(StoreFixtures.someProducer());
         final var product1 = productService.create(StoreFixtures.someProduct(producer));
+        final var purchase = purchaseService.create(StoreFixtures.somePurchase(customer, product1));
         final var opinion = opinionService.create(StoreFixtures.someOpinion(customer, product1));
         purchaseService.create(StoreFixtures.somePurchase(customer, product1).withQuantity(1));
         purchaseService.create(StoreFixtures.somePurchase(customer, product1).withQuantity(3));

@@ -29,7 +29,7 @@ public class ProducerDatabaseRepositoryTest {
         assertNotNull(reloadDataService);
         assertNotNull(producerService);
 
-        reloadDataService.loadRandomData();
+        reloadDataService.loadRandomData(20);
     }
 
 

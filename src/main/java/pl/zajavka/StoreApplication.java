@@ -10,6 +10,6 @@ public class StoreApplication {
         ApplicationContext context = new AnnotationConfigApplicationContext(ApplicationConfiguration.class);
 
         ReloadDataService reloadDataService = context.getBean(ReloadDataService.class);
-        reloadDataService.loadRandomData();
+        reloadDataService.loadRandomData(20);
     }
 }

@@ -21,7 +21,7 @@ public class RandomDataPreparationService {
                 .email(name + "@example.com")
                 .name(name)
                 .surname("surname")
-                .dateOfBirth(LocalDate.of(1990, 11, 11))
+                .dateOfBirth(LocalDate.of(randomInt(1945, 2023), randomInt(1, 13), randomInt(1, 29)))
                 .telephoneNumber("+" + randomString(48,57, 11))
                 .build();
     }

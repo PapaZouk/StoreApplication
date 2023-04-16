@@ -64,8 +64,6 @@ public class CustomerDatabaseRepository implements CustomerRepository {
 
     @Override
     public List<Customer> findAll() {
-//        return new JdbcTemplate(simpleDriverDataSource)
-//                .query(SELECT_ALL_CUSTOMERS, new BeanPropertyRowMapper<>(Customer.class));
         JdbcTemplate jdbcTemplate = new JdbcTemplate(simpleDriverDataSource);
         return jdbcTemplate.query(SELECT_ALL_CUSTOMERS, (rs, rowNum) -> databaseMapper.mapCustomer(rs, rowNum));
     }

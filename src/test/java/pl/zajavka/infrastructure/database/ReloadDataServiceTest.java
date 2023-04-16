@@ -12,7 +12,8 @@ import pl.zajavka.infrastructure.configuration.ApplicationConfiguration;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @Slf4j
 @SpringJUnitConfig(classes = ApplicationConfiguration.class)

@@ -33,7 +33,7 @@ public class ProductDatabaseRepositoryTest {
         assertNotNull(productService);
         assertNotNull(producerService);
 
-        reloadDataService.loadRandomData();
+        reloadDataService.loadRandomData(20);
     }
 
     @Test

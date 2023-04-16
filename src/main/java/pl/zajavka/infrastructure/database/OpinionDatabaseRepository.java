@@ -22,9 +22,11 @@ public class OpinionDatabaseRepository implements OpinionRepository {
 
     public static final String SELECT_ALL_OPINION = "SELECT * FROM opinion";
     private static final String DELETE_FROM_OPINION = "DELETE FROM opinion WHERE 1 = 1";
-    private static final String SELECT_ONE_OPINION_WHERE_EMAIL =
-            "SELECT * FROM opinion WHERE customer_id IN " +
-            "(SELECT customer_id FROM customer WHERE email = :email)";
+    private static final String SELECT_ONE_OPINION_WHERE_EMAIL = """
+                SELECT * FROM opinion WHERE customer_id IN
+                    (SELECT customer_id FROM customer WHERE email = :email)
+                """;
+
     public static final String REMOVED_OPINION_ROWS_FOR_CUSTOMER_WITH_EMAIL =
             "Removed opinion rows for customer with email: [{}]";
     private static final String DELETE_FROM_OPINION_WHERE_STARS_BETWEEN =

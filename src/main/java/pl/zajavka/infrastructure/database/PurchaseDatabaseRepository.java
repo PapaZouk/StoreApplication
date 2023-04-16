@@ -31,13 +31,21 @@ public class PurchaseDatabaseRepository implements PurchaseRepository {
             "(SELECT customer_id FROM customer WHERE email = :email)";
     private static final String REMOVE_PURCHASE_WHERE_EMAIL = "DELETE FROM purchase WHERE email IN " +
             "(SELECT email FROM customer WHERE email = :email)";
-    private static final String SELECT_ALL_WHERE_CUSTOMER_EMAIL_AND_PRODUCT_CODE = """
-            SELECT * FROM purchase AS pur
+
+    public static final String SELECT_ALL_WHERE_CUSTOMER_EMAIL_AND_PRODUCT_CODE = """
+            SELECT * FROM purchase AS pur 
                 INNER JOIN customer AS cus ON cus.id = pur.customer_id
-                INNER JOIN product AS prod ON cus.id = prod.product_id
-                WHERE cus.email = :email AND prod.product_code = :productCode
-                ORDER BY date_time
+                INNER JOIN product AS prod ON prod.id = pur.product_id
+                WHERE cus.email = :email
+                AND prod.product_code = :productCode
             """;
+//    private static final String SELECT_ALL_WHERE_CUSTOMER_EMAIL_AND_PRODUCT_CODE = """
+//            SELECT * FROM purchase AS pur
+//                INNER JOIN customer AS cus ON cus.id = pur.customer_id
+//                INNER JOIN product AS prod ON cus.id = prod.product_id
+//                WHERE cus.email = :email AND prod.product_code = :productCode
+//                ORDER BY date_time
+//            """;
     private SimpleDriverDataSource simpleDriverDataSource;
     private DatabaseMapper databaseMapper;
 
@@ -99,7 +107,7 @@ public class PurchaseDatabaseRepository implements PurchaseRepository {
         final var jdbcTemplate = new NamedParameterJdbcTemplate(simpleDriverDataSource);
         return jdbcTemplate.query(
                 SELECT_ALL_WHERE_CUSTOMER_EMAIL_AND_PRODUCT_CODE,
-                Map.of("email", email, "product_code", productCode),
+                Map.of("email", email, "productCode", productCode),
                 (rs, rowNum) -> databaseMapper.mapPurchase(rs, rowNum));
     }
 }
