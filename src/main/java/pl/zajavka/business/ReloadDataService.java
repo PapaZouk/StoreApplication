@@ -23,6 +23,7 @@ public class ReloadDataService {
         for (int i = 0; i < 20; i++) {
             randomDataService.create();
         }
+        log.info("Successfully loaded 20 random data");
     }
 
     public void removeAllDatabaseData() {

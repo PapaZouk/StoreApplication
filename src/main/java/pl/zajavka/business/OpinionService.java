@@ -9,6 +9,7 @@ import pl.zajavka.domain.Opinion;
 import pl.zajavka.infrastructure.database.OpinionDatabaseRepository;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static pl.zajavka.infrastructure.configuration.DatabaseConfiguration.*;
 
@@ -34,5 +35,13 @@ public class OpinionService {
 
     public int removeAll(String email) {
         return opinionDatabaseRepository.removeAll(email);
+    }
+
+    public int removeAll(int minStars, int maxStars) {
+        return opinionDatabaseRepository.removeAll(minStars, maxStars);
+    }
+
+    public List<Opinion> findAll(int minStars, int maxStars) {
+        return opinionDatabaseRepository.findAll(minStars, maxStars);
     }
 }
