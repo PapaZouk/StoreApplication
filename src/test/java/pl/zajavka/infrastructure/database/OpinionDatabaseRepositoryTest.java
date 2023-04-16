@@ -57,6 +57,17 @@ public class OpinionDatabaseRepositoryTest {
     @Test
     @DisplayName("Should remove opinion from database successfully")
     void thatOpinionWillBeRemovedFromDatabase() {
+        // given
+        Customer customer = customerService.create(StoreFixtures.someCustomer());
+        Producer producer = producerService.create(StoreFixtures.someProducer());
+        Product product = productService.create(StoreFixtures.someProduct(producer));
+        Opinion opinion = opinionService.create(StoreFixtures.someOpinion(customer, product));
 
+        // when
+        int result = opinionService.removeAll(customer.getEmail());
+        log.info("Successfully removed opinions: [{}]", result);
+
+        // then
+        assertEquals(1, result);
     }
 }
