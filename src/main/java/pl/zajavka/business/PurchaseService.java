@@ -29,12 +29,12 @@ public class PurchaseService {
     }
 
     @Transactional
-    public void remove(String email) {
-        purchaseDatabaseRepository.remove(email);
+    public int remove(String email) {
+        return purchaseDatabaseRepository.remove(email);
     }
 
-
-    public void removeAll(String email) {
-        purchaseDatabaseRepository.removeAll(email);
+    @Transactional
+    public int removeAll(String email) {
+        return purchaseDatabaseRepository.removeAll(email);
     }
 }

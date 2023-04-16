@@ -25,12 +25,11 @@ import static pl.zajavka.infrastructure.configuration.DatabaseConfiguration.*;
 @AllArgsConstructor
 public class PurchaseDatabaseRepository implements PurchaseRepository {
 
+    public static final String CUSTOMER_WITH_EMAIL_S_IS_TOO_OLD =
+            "Could not remove purchase because customer with email: [%s] is too old";
     private static final String DELETE_FROM_PURCHASE = "DELETE FROM purchase WHERE 1 = 1";
     private static final String SELECT_PURCHASES_WHERE_EMAIL = "SELECT * FROM purchase WHERE customer_id IN " +
             "(SELECT customer_id FROM customer WHERE email = :email)";
-
-    public static final String CUSTOMER_WITH_EMAIL_S_IS_TOO_OLD =
-            "Could not remove purchase because customer with email: [%s] is too old";
     private static final String REMOVE_PURCHASE_WHERE_EMAIL = "DELETE FROM purchase WHERE email IN " +
             "(SELECT email FROM customer WHERE email = :email)";
     private SimpleDriverDataSource simpleDriverDataSource;
@@ -60,7 +59,7 @@ public class PurchaseDatabaseRepository implements PurchaseRepository {
     }
 
     @Override
-    public void remove(String email) {
+    public int remove(String email) {
         final var jdbcTemplate = new NamedParameterJdbcTemplate(simpleDriverDataSource);
         var params = Map.of("email", email);
         Customer customer = jdbcTemplate.queryForObject(SELECT_ONE_USER_WHERE_EMAIL, params, databaseMapper::mapCustomer);
@@ -71,10 +70,15 @@ public class PurchaseDatabaseRepository implements PurchaseRepository {
         }
         int removedRows = jdbcTemplate.update(REMOVE_PURCHASE_WHERE_EMAIL, params);
         log.info("Successfully removed: [{}] rows", removedRows);
+        return removedRows;
     }
 
     @Override
-    public void removeAll(String email) {
-        new JdbcTemplate(simpleDriverDataSource).update(DELETE_FROM_CUSTOMER_WHERE_EMAIL, email);
+    public int removeAll(String email) {
+        var jdbcTemplate = new NamedParameterJdbcTemplate(simpleDriverDataSource);
+        var params = Map.of("email", email);
+        int removedPurchases = jdbcTemplate.update(DELETE_FROM_PURCHASE_WHERE_EMAIL, params);
+        log.info("Removed purchase rows for customer with email: [{}]", removedPurchases);
+        return removedPurchases;
     }
 }

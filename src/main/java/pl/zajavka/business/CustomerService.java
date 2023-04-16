@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.zajavka.domain.Customer;
+import pl.zajavka.domain.Opinion;
 import pl.zajavka.infrastructure.database.CustomerDatabaseRepository;
 
 import java.time.LocalDate;
@@ -17,6 +18,7 @@ public class CustomerService {
 
     private OpinionService opinionService;
     private PurchaseService purchaseService;
+    private ProducerService producerService;
     private CustomerDatabaseRepository customerDatabaseRepository;
 
     @Transactional
@@ -42,13 +44,19 @@ public class CustomerService {
 
     @Transactional
     public int remove(String email) {
-//        opinionService.removeAll(email);
-//        purchaseService.removeAll(email);
         Customer customer = find(email);
+
+        int removeResult1 = opinionService.removeAll(customer.getEmail());
+        log.info("Successfully removed opinions: [{}]", removeResult1);
+
+        int removeResult2 = purchaseService.removeAll(customer.getEmail());
+        log.info("Successfully removed purchases: [{}]", removeResult2);
+
         if (LocalDate.now().getYear() - customer.getDateOfBirth().getYear() > 40) {
             throw new RuntimeException(
                     "Could not remove purchase because customer with email: [%s] is too old".formatted(email));
         }
+
         return customerDatabaseRepository.remove(email);
     }
 }

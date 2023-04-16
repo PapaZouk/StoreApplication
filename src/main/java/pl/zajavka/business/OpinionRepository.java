@@ -8,5 +8,5 @@ public interface OpinionRepository {
     Opinion find(String email);
     void removeAll();
 
-    void removeAll(String email);
+    int removeAll(String email);
 }

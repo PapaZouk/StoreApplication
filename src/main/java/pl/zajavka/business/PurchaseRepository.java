@@ -11,7 +11,7 @@ public interface PurchaseRepository {
 
     Optional<Purchase> find(String email);
 
-    void remove(String email);
+    int remove(String email);
 
-    void removeAll(String email);
+    int removeAll(String email);
 }

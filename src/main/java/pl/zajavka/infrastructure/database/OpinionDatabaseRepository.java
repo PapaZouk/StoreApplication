@@ -53,7 +53,11 @@ public class OpinionDatabaseRepository implements OpinionRepository {
     }
 
     @Override
-    public void removeAll(String email) {
-        new JdbcTemplate(simpleDriverDataSource).update(DELETE_FROM_OPINION_WHERE_EMAIL, email);
+    public int removeAll(String email) {
+        var jdbcTemplate = new NamedParameterJdbcTemplate(simpleDriverDataSource);
+        var params = Map.of("email", email);
+        int removedRows = jdbcTemplate.update(DELETE_FROM_OPINION_WHERE_EMAIL, params);
+        log.info("Removed opinion rows for customer with email: [{}]", removedRows);
+        return removedRows;
     }
 }

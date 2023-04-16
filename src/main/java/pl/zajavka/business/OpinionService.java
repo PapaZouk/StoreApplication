@@ -32,7 +32,7 @@ public class OpinionService {
         return opinionDatabaseRepository.find(email);
     }
 
-    public void removeAll(String email) {
-        opinionDatabaseRepository.removeAll(email);
+    public int removeAll(String email) {
+        return opinionDatabaseRepository.removeAll(email);
     }
 }

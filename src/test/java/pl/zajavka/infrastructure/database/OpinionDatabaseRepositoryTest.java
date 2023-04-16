@@ -53,4 +53,10 @@ public class OpinionDatabaseRepositoryTest {
         assertEquals(opinion.getStars(), result.getStars());
         assertEquals(opinion.getComment(), result.getComment());
     }
+
+    @Test
+    @DisplayName("Should remove opinion from database successfully")
+    void thatOpinionWillBeRemovedFromDatabase() {
+
+    }
 }

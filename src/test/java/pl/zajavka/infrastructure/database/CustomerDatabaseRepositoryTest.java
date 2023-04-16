@@ -103,6 +103,30 @@ class CustomerDatabaseRepositoryTest {
     }
 
     @Test
+    @DisplayName("Customer should be removed successfully")
+    void testRemoveCustomer() {
+        // given
+        Customer expected = customerService.create(StoreFixtures.someCustomer());
+        Producer producer = producerService.create(StoreFixtures.someProducer());
+        Product product = productService.create(StoreFixtures.someProduct(producer));
+        Opinion opinion = opinionService.create(StoreFixtures.someOpinion(expected, product));
+        Purchase purchase = purchaseService.create(StoreFixtures.somePurchase(expected, product));
+
+        Customer actual = customerService.find(expected.getEmail());
+
+
+        log.info("Actual customer created: [{}]", actual);
+        log.info("Opinion created: [{}]", opinion);
+
+        // when
+        int removedCustomer = customerService.remove(expected.getEmail());
+        log.info("Removed customer: [{}]", removedCustomer);
+
+        // then
+        assertEquals(1, removedCustomer);
+    }
+
+    @Test
     @DisplayName("Transaction should fail when removing customer")
     void thatCustomerWhenRemovingWillFail() {
         // given
