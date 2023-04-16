@@ -2,6 +2,7 @@ package pl.zajavka.business;
 
 import pl.zajavka.domain.Product;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface ProductRepository {
@@ -10,4 +11,6 @@ public interface ProductRepository {
     void removeAll();
 
     Optional<Product> find(String productCode);
+
+    List<Product> findAll();
 }

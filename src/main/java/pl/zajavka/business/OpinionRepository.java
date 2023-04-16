@@ -14,5 +14,7 @@ public interface OpinionRepository {
 
     int removeAll(int minStars, int maxStars);
 
+    List<Opinion> findAll();
+
     List<Opinion> findAll(int minStars, int maxStars);
 }

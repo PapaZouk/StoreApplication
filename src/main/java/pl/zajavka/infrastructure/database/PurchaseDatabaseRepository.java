@@ -3,9 +3,6 @@ package pl.zajavka.infrastructure.database;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
@@ -26,6 +23,7 @@ import static pl.zajavka.infrastructure.configuration.DatabaseConfiguration.*;
 @AllArgsConstructor
 public class PurchaseDatabaseRepository implements PurchaseRepository {
 
+    public static final String SELECT_ALL_PURCHASE = "SELECT * FROM purchase";
     public static final String CUSTOMER_WITH_EMAIL_S_IS_TOO_OLD =
             "Could not remove purchase because customer with email: [%s] is too old";
     private static final String DELETE_FROM_PURCHASE = "DELETE FROM purchase WHERE 1 = 1";
@@ -64,6 +62,12 @@ public class PurchaseDatabaseRepository implements PurchaseRepository {
         final var jdbcTemplate = new NamedParameterJdbcTemplate(simpleDriverDataSource);
         var params = Map.of("email", email);
         return Optional.ofNullable(jdbcTemplate.queryForObject(SELECT_PURCHASES_WHERE_EMAIL, params, (rs, rowNum) -> databaseMapper.mapPurchase(rs, rowNum)));
+    }
+
+    @Override
+    public List<Purchase> findAll() {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(simpleDriverDataSource);
+        return jdbcTemplate.query(SELECT_ALL_PURCHASE, (rs, rowNum) -> databaseMapper.mapPurchase(rs, rowNum));
     }
 
     @Override

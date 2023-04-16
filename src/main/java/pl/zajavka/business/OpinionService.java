@@ -4,15 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pl.zajavka.domain.Customer;
 import pl.zajavka.domain.Opinion;
 import pl.zajavka.domain.Purchase;
 import pl.zajavka.infrastructure.database.OpinionDatabaseRepository;
 
-import java.time.LocalDate;
 import java.util.List;
-
-import static pl.zajavka.infrastructure.configuration.DatabaseConfiguration.*;
 
 @Slf4j
 @Service
@@ -57,5 +53,9 @@ public class OpinionService {
 
     public List<Opinion> findAll(int minStars, int maxStars) {
         return opinionDatabaseRepository.findAll(minStars, maxStars);
+    }
+
+    public List<Opinion> findAll() {
+        return opinionDatabaseRepository.findAll();
     }
 }

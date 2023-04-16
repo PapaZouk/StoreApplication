@@ -2,7 +2,6 @@ package pl.zajavka.infrastructure.database;
 
 import lombok.AllArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
@@ -10,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import pl.zajavka.business.ProducerRepository;
 import pl.zajavka.domain.Producer;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -19,6 +19,7 @@ import static pl.zajavka.infrastructure.configuration.DatabaseConfiguration.*;
 @AllArgsConstructor
 public class ProducerDatabaseRepository implements ProducerRepository {
 
+    public static final String SELECT_ALL_PRODUCER = "SELECT * FROM producer";
     private static final String DELETE_FROM_PRODUCER = "DELETE FROM producer WHERE 1 = 1";
     private final SimpleDriverDataSource simpleDriverDataSource;
     private final DatabaseMapper databaseMapper;
@@ -50,6 +51,12 @@ public class ProducerDatabaseRepository implements ProducerRepository {
         final var jdbcTemplate = new NamedParameterJdbcTemplate(simpleDriverDataSource);
         var params = Map.of("producer_name", producerName);
         return Optional.ofNullable(jdbcTemplate.queryForObject(SELECT_ONE_PRODUCER_WHERE_NAME, params, databaseMapper::mapProducer));
+    }
+
+    @Override
+    public List<Producer> findAll() {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(simpleDriverDataSource);
+        return jdbcTemplate.query(SELECT_ALL_PRODUCER, (rs, rowNum) -> databaseMapper.mapProducer(rs, rowNum));
     }
 
 }

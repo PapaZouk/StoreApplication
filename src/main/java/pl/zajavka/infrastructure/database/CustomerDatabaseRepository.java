@@ -2,7 +2,6 @@ package pl.zajavka.infrastructure.database;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -11,7 +10,6 @@ import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.stereotype.Repository;
 import pl.zajavka.business.CustomerRepository;
 import pl.zajavka.domain.Customer;
-import pl.zajavka.infrastructure.configuration.DatabaseConfiguration;
 
 import java.util.List;
 import java.util.Map;
@@ -23,6 +21,7 @@ import static pl.zajavka.infrastructure.configuration.DatabaseConfiguration.*;
 @Repository
 @AllArgsConstructor
 public class CustomerDatabaseRepository implements CustomerRepository {
+    public static final String SELECT_ALL_CUSTOMERS = "SELECT * FROM customer";
     private final SimpleDriverDataSource simpleDriverDataSource;
     private DatabaseMapper databaseMapper;
 
@@ -65,8 +64,10 @@ public class CustomerDatabaseRepository implements CustomerRepository {
 
     @Override
     public List<Customer> findAll() {
-        return new JdbcTemplate(simpleDriverDataSource)
-                .query(SELECT_ALL_CUSTOMERS, new BeanPropertyRowMapper<>(Customer.class));
+//        return new JdbcTemplate(simpleDriverDataSource)
+//                .query(SELECT_ALL_CUSTOMERS, new BeanPropertyRowMapper<>(Customer.class));
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(simpleDriverDataSource);
+        return jdbcTemplate.query(SELECT_ALL_CUSTOMERS, (rs, rowNum) -> databaseMapper.mapCustomer(rs, rowNum));
     }
 
     @Override

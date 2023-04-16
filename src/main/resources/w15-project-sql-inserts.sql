@@ -1,4 +1,4 @@
-INSERT INTO CUSTOMER (ID, USER_NAME, EMAIL, NAME, SURNAME, DATE_OF_BIRTH, TELEPHONE_NUMBER) VALUES
+INSERT INTO customer (id, user_name, email, name, surname, date_of_birth, telephone_number) VALUES
 (1, 'dmcgettrick0', 'dmcgettrick0@infoseek.cjp', 'Dorris', 'McGettrick', '1986-11-18', '90-261-3997'),
 (2, 'gseaking1', 'gseaking1@wikipedia.org', 'Gretchen', 'Seaking', '1983-2-25', null),
 (3, 'lthurnham2', 'lthurnham2@php.net', 'Libbey', 'Thurnham', '1986-11-15', null),
@@ -14,7 +14,7 @@ INSERT INTO CUSTOMER (ID, USER_NAME, EMAIL, NAME, SURNAME, DATE_OF_BIRTH, TELEPH
 (13, 'cvinickc', 'cvinickc@latimes.com', 'Colin', 'Vinick', '2003-10-22', null),
 (14, 'edetoiled', 'edetoiled@shoppro.jp', 'Emerson', 'Detoile', '1996-12-24', null),
 (15, 'gbeetone', 'gbeetone@dot.gov', 'Genevra', 'Beeton', '1940-10-22', '80-278-6481'),
-(16, 'wsimeonif', 'wsimeonif@webmd.com' 'Welby', 'Simeoni', '1983-3-15', '26-037-2470'),
+(16, 'wsimeonif', 'wsimeonif@webmd.com', 'Welby', 'Simeoni', '1983-3-15', '26-037-2470'),
 (17, 'aaloshiking', 'aaloshiking@dropbox.com', 'Aloysius', 'Aloshikin', '1989-9-26', '43-671-4386'),
 (18, 'tgerretsh', 'tgerretsh@bloomberg.com', 'Thatcher', 'Gerrets', '2005-2-6', null),
 (19, 'zwroathi', 'zwroathi@liveinternet.ru', 'Zorah', 'Wroath', '1966-1-21', null),
@@ -100,7 +100,7 @@ INSERT INTO CUSTOMER (ID, USER_NAME, EMAIL, NAME, SURNAME, DATE_OF_BIRTH, TELEPH
 (99, 'akmiec2q', 'akmiec2q@taobao.com', 'Ami', 'Kmiec', '2002-1-21', '10-816-6087'),
 (100, 'tgoodsal2r', 'tgoodsal2r@edublogs.org', 'Talbert', 'Goodsal', '1942-4-14', null);
 
-INSERT INTO PRODUCER (ID, PRODUCER_NAME, ADDRESS) VALUES
+INSERT INTO producer (id, producer_name, address) VALUES
 (1, 'Heidenreich-Mayer', '477 Hoffman Crossing'),
 (2, 'Hayes Group', '8 Novick Street'),
 (3, 'Goyette, Dietrich and Cassin', '995 Cambridge Street'),
@@ -122,7 +122,7 @@ INSERT INTO PRODUCER (ID, PRODUCER_NAME, ADDRESS) VALUES
 (19, 'Gerlach and Sons', '24 Almo Point'),
 (20, 'Mertz Group', '2 Mandrake Point');
 
-INSERT INTO PRODUCT (ID, PRODUCT_CODE, PRODUCT_NAME, PRODUCT_PRICE, ADULTS_ONLY, DESCRIPTION, PRODUCER_ID) VALUES
+INSERT INTO product (id, product_code, product_name, product_price, adults_only, description, producer_id) VALUES
 (1, '58394-014', 'Chivas Regal - 12 Year Old', 16.29, false, 'Befv mcmo tgzs rpgt zcpb', 1),
 (2, '55319-866', 'Fennel', 38.49, false, 'Lbyq bfwo pqux mppe tjpq', 2),
 (3, '0008-0407', 'Muffin Batt - Ban Dream Zero', 14.85, false, 'Sujh xcjs dhjx djeb vbdp', 3),
@@ -174,7 +174,7 @@ INSERT INTO PRODUCT (ID, PRODUCT_CODE, PRODUCT_NAME, PRODUCT_PRICE, ADULTS_ONLY,
 (49, '42002-516', 'Shrimp - Black Tiger 26/30', 43.43, true, 'Lbkf rrwq laxm qjbw xdyp', 3),
 (50, '60919-1073', 'Pork - Chop, Frenched', 34.16, false, 'Crmc grnz zvqg qjnj eosg', 15);
 
-INSERT INTO PURCHASE (ID, CUSTOMER_ID, PRODUCT_ID, QUANTITY, DATE_TIME) VALUES
+INSERT INTO purchase (id, customer_id, product_id, quantity, date_time) VALUES
 (1, 85, 24, 4, '2018-06-14 09:46:57 -03:00'),
 (2, 91, 23, 7, '2018-06-28 22:39:39 +05:00'),
 (3, 27, 40, 4, '2017-12-08 21:08:56 -01:00'),
@@ -476,7 +476,7 @@ INSERT INTO PURCHASE (ID, CUSTOMER_ID, PRODUCT_ID, QUANTITY, DATE_TIME) VALUES
 (299, 25, 11, 2, '2015-06-15 00:48:46 -05:00'),
 (300, 73, 26, 18, '2019-05-17 17:06:57 -05:00');
 
-INSERT INTO OPINION (ID, CUSTOMER_ID, PRODUCT_ID, STARS, COMMENT, DATE_TIME) VALUES
+INSERT INTO opinion (id, customer_id, product_id, stars, comment, date_time) VALUES
 (1, 69, 39, 3, 'Giaa tuh zszyqsn rhqh wmidxby ezwxa', '2016-07-17 21:20:32 -05:00'),
 (2, 94, 2, 3, 'Ncdk gaz dxlsblh zuxs shpaofs wssbs', '2018-02-07 08:56:46 +07:00'),
 (3, 80, 4, 1, 'Xrku cvm nhukkdv rrxd sfmhwin cfppg', '2015-01-11 04:26:17 +07:00'),

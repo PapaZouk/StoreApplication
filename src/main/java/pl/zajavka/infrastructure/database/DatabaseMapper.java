@@ -3,7 +3,6 @@ package pl.zajavka.infrastructure.database;
 import org.springframework.stereotype.Component;
 import pl.zajavka.domain.*;
 
-import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;

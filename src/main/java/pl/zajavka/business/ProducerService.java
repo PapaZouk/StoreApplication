@@ -6,6 +6,8 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.zajavka.domain.Producer;
 import pl.zajavka.infrastructure.database.ProducerDatabaseRepository;
 
+import java.util.List;
+
 @Service
 @AllArgsConstructor
 public class ProducerService {
@@ -33,5 +35,9 @@ public class ProducerService {
     public Producer find(String producerName) {
         return producerDatabaseRepository.find(producerName)
                 .orElseThrow(() -> new RuntimeException("Producer with name: [%s] is missing".formatted(producerName)));
+    }
+
+    public List<Producer> findAll() {
+        return producerDatabaseRepository.findAll();
     }
 }

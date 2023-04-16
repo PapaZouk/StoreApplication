@@ -20,6 +20,7 @@ import static pl.zajavka.infrastructure.configuration.DatabaseConfiguration.*;
 @AllArgsConstructor
 public class OpinionDatabaseRepository implements OpinionRepository {
 
+    public static final String SELECT_ALL_OPINION = "SELECT * FROM opinion";
     private static final String DELETE_FROM_OPINION = "DELETE FROM opinion WHERE 1 = 1";
     private static final String SELECT_ONE_OPINION_WHERE_EMAIL =
             "SELECT * FROM opinion WHERE customer_id IN " +
@@ -51,6 +52,12 @@ public class OpinionDatabaseRepository implements OpinionRepository {
 
         var params = Map.of("email", email);
         return jdbcTemplate.queryForObject(SELECT_ONE_OPINION_WHERE_EMAIL, params, databaseMapper::mapOpinion);
+    }
+
+    @Override
+    public List<Opinion> findAll() {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(simpleDriverDataSource);
+        return jdbcTemplate.query(SELECT_ALL_OPINION, (rs, rowNum) -> databaseMapper.mapOpinion(rs, rowNum));
     }
 
     @Override
