@@ -2,6 +2,7 @@ package pl.zajavka.business;
 
 import pl.zajavka.domain.Purchase;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface PurchaseRepository {
@@ -14,4 +15,6 @@ public interface PurchaseRepository {
     int remove(String email);
 
     int removeAll(String email);
+
+    List<Purchase> findAll(String email, String productCode);
 }

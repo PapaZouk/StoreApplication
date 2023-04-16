@@ -15,6 +15,7 @@ import pl.zajavka.domain.Customer;
 import pl.zajavka.domain.Purchase;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -32,12 +33,19 @@ public class PurchaseDatabaseRepository implements PurchaseRepository {
             "(SELECT customer_id FROM customer WHERE email = :email)";
     private static final String REMOVE_PURCHASE_WHERE_EMAIL = "DELETE FROM purchase WHERE email IN " +
             "(SELECT email FROM customer WHERE email = :email)";
+    private static final String SELECT_ALL_WHERE_CUSTOMER_EMAIL_AND_PRODUCT_CODE = """
+            SELECT * FROM purchase AS pur
+                INNER JOIN customer AS cus ON cus.id = pur.customer_id
+                INNER JOIN product AS prod ON cus.id = prod.product_id
+                WHERE cus.email = :email AND prod.product_code = :productCode
+                ORDER BY date_time
+            """;
     private SimpleDriverDataSource simpleDriverDataSource;
     private DatabaseMapper databaseMapper;
 
     @Override
     public Purchase create(Purchase purchase) {
-        SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(simpleDriverDataSource)
+        final var jdbcInsert = new SimpleJdbcInsert(simpleDriverDataSource)
                 .withTableName(PURCHASE_TABLE)
                 .usingGeneratedKeyColumns(PURCHASE_TABLE_PKEY);
 
@@ -75,10 +83,19 @@ public class PurchaseDatabaseRepository implements PurchaseRepository {
 
     @Override
     public int removeAll(String email) {
-        var jdbcTemplate = new NamedParameterJdbcTemplate(simpleDriverDataSource);
+        final var jdbcTemplate = new NamedParameterJdbcTemplate(simpleDriverDataSource);
         var params = Map.of("email", email);
         int removedPurchases = jdbcTemplate.update(DELETE_FROM_PURCHASE_WHERE_EMAIL, params);
         log.info("Removed purchase rows for customer with email: [{}]", removedPurchases);
         return removedPurchases;
+    }
+
+    @Override
+    public List<Purchase> findAll(String email, String productCode) {
+        final var jdbcTemplate = new NamedParameterJdbcTemplate(simpleDriverDataSource);
+        return jdbcTemplate.query(
+                SELECT_ALL_WHERE_CUSTOMER_EMAIL_AND_PRODUCT_CODE,
+                Map.of("email", email, "product_code", productCode),
+                (rs, rowNum) -> databaseMapper.mapPurchase(rs, rowNum));
     }
 }

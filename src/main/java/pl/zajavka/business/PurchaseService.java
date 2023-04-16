@@ -7,6 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.zajavka.domain.Purchase;
 import pl.zajavka.infrastructure.database.PurchaseDatabaseRepository;
 
+import java.util.List;
+
 @Slf4j
 @Service
 @AllArgsConstructor
@@ -36,5 +38,9 @@ public class PurchaseService {
     @Transactional
     public int removeAll(String email) {
         return purchaseDatabaseRepository.removeAll(email);
+    }
+
+    public List<Purchase> findAll(String email, String productCode) {
+        return purchaseDatabaseRepository.findAll(email, productCode);
     }
 }
