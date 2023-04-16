@@ -14,5 +14,7 @@ public interface CustomerRepository {
 
     List<Customer> findAll();
 
+    Optional<Customer> find(long id);
+
     int remove(String email);
 }

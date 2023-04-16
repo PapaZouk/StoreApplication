@@ -2,7 +2,6 @@ package pl.zajavka.infrastructure.database;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,7 +15,8 @@ import pl.zajavka.domain.Product;
 import pl.zajavka.domain.StoreFixtures;
 import pl.zajavka.infrastructure.configuration.ApplicationConfiguration;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @Slf4j
 @SpringJUnitConfig(classes = ApplicationConfiguration.class)

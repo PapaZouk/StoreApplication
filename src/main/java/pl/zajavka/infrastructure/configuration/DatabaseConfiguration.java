@@ -33,6 +33,7 @@ public class DatabaseConfiguration {
     public static final String SELECT_ONE_PRODUCER_WHERE_NAME = "SELECT * FROM producer WHERE producer_name = :producer_name";
     public static final String SELECT_ALL_CUSTOMERS = "SELECT * FROM customer";
     public static final String CUSTOMER_WITH_EMAIL_IS_TOO_OLD = "Could not remove purchase because customer with email: [%s] is too old";
+    public static final String SELECT_ONE_CUSTOMER_WHERE_ID = "SELECT * FROM customer WHERE id = :id";
 
     @Bean
     public SimpleDriverDataSource simpleDriverDataSource() {

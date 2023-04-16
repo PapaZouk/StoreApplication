@@ -152,6 +152,21 @@ class CustomerDatabaseRepositoryTest {
                 "Could not remove purchase because customer with email: [%s] is too old".formatted(customer.getEmail()),
                 exception.getMessage()
         );
+    }
 
+    @Test
+    @DisplayName("Should remove all customers which gave stars less than 4")
+    void thatCustomersWithStarsLessThan4ShouldBeRemoved() {
+        // given
+        reloadDataService.removeAllDatabaseData();
+        reloadDataService.loadRandomData();
+
+        int numberOfOpinionsWithStarsLessThan4 = opinionService.findAll(1, 3).size();
+
+        // when
+        int result = customerService.removeWithStars(1, 3);
+
+        // then
+        assertEquals(numberOfOpinionsWithStarsLessThan4, result);
     }
 }

@@ -23,7 +23,6 @@ import static pl.zajavka.infrastructure.configuration.DatabaseConfiguration.*;
 @Repository
 @AllArgsConstructor
 public class CustomerDatabaseRepository implements CustomerRepository {
-
     private final SimpleDriverDataSource simpleDriverDataSource;
     private DatabaseMapper databaseMapper;
 
@@ -57,6 +56,17 @@ public class CustomerDatabaseRepository implements CustomerRepository {
     }
 
     @Override
+    public Optional<Customer> find(long id) {
+        final var jdbcTemplate = new NamedParameterJdbcTemplate(simpleDriverDataSource);
+        var params = Map.of("id", id);
+        Customer customer = jdbcTemplate.queryForObject(SELECT_ONE_CUSTOMER_WHERE_ID,
+                params,
+                databaseMapper::mapCustomer);
+        log.info("Found customer: [{}]", customer);
+        return Optional.ofNullable(customer);
+    }
+
+    @Override
     public int remove(String email) {
         final var jdbcTemplate = new NamedParameterJdbcTemplate(simpleDriverDataSource);
         var params = Map.of("email", email);
@@ -64,4 +74,5 @@ public class CustomerDatabaseRepository implements CustomerRepository {
         log.info("Rows removed: [{}]", removedResult);
         return removedResult;
     }
+
 }
