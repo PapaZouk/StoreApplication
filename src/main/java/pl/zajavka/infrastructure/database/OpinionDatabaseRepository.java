@@ -14,7 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static pl.zajavka.infrastructure.configuration.DatabaseConfiguration.*;
+import static pl.zajavka.infrastructure.configuration.DatabaseConfiguration.OPINION_TABLE;
+import static pl.zajavka.infrastructure.configuration.DatabaseConfiguration.OPINION_TABLE_PKEY;
 
 @Slf4j
 @Repository
