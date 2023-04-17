@@ -19,10 +19,6 @@ public class OpinionService {
 
     private final OpinionDatabaseRepository opinionDatabaseRepository;
 
-    public void removeAll() {
-        opinionDatabaseRepository.removeAll();
-    }
-
     @Transactional
     public Opinion create(Opinion opinion) {
         String email = opinion.getCustomerId().getEmail();
@@ -34,13 +30,30 @@ public class OpinionService {
 
         if (purchases.isEmpty()) {
             throw new RuntimeException("Customer: [%s] wants to give opinion for product: [%s] but there is no purchase"
-                            .formatted(email, productCode));
+                    .formatted(email, productCode));
         }
         return opinionDatabaseRepository.create(opinion);
     }
 
     public Opinion find(String email) {
-        return opinionDatabaseRepository.find(email);
+        return opinionDatabaseRepository.find(email)
+                .orElseThrow(() -> new RuntimeException("Opinion for email: [%s] doesn't exists".formatted(email)));
+    }
+
+    public List<Opinion> findAll() {
+        return opinionDatabaseRepository.findAll();
+    }
+
+    public List<Opinion> findAll(int minStars, int maxStars) {
+        return opinionDatabaseRepository.findAll(minStars, maxStars);
+    }
+
+    public List<Opinion> findAllByProductCode(String productCode) {
+        return opinionDatabaseRepository.findAll(productCode);
+    }
+
+    public void removeAll() {
+        opinionDatabaseRepository.removeAll();
     }
 
     public int removeAll(String email) {
@@ -49,18 +62,6 @@ public class OpinionService {
 
     public int removeAll(int minStars, int maxStars) {
         return opinionDatabaseRepository.removeAll(minStars, maxStars);
-    }
-
-    public List<Opinion> findAll(int minStars, int maxStars) {
-        return opinionDatabaseRepository.findAll(minStars, maxStars);
-    }
-
-    public List<Opinion> findAll() {
-        return opinionDatabaseRepository.findAll();
-    }
-
-    public List<Opinion> findAllByProductCode(String productCode) {
-        return opinionDatabaseRepository.findAll(productCode);
     }
 
     public void removeAllByProductCode(String productCode) {

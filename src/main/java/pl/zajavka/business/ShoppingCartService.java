@@ -7,7 +7,6 @@ import pl.zajavka.domain.Customer;
 import pl.zajavka.domain.Product;
 import pl.zajavka.domain.Purchase;
 
-import java.time.LocalDate;
 import java.time.OffsetDateTime;
 
 @Slf4j

@@ -9,7 +9,6 @@ import pl.zajavka.domain.*;
 import pl.zajavka.infrastructure.configuration.ApplicationConfiguration;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 

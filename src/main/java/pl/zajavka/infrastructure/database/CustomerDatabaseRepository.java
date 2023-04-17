@@ -22,11 +22,17 @@ import static pl.zajavka.infrastructure.configuration.DatabaseConfiguration.*;
 @AllArgsConstructor
 public class CustomerDatabaseRepository implements CustomerRepository {
     public static final String SELECT_ALL_CUSTOMERS = "SELECT * FROM customer";
+    public static final String DELETE_FROM_CUSTOMER = "DELETE FROM customer WHERE 1 = 1";
+    public static final String SELECT_ONE_CUSTOMER_WHERE_ID = "SELECT * FROM customer WHERE id = :id";
+    public static final String SELECT_ONE_USER_WHERE_EMAIL = "SELECT * FROM customer WHERE email = :email";
+    public static final String DELETE_FROM_CUSTOMER_WHERE_EMAIL = "DELETE FROM customer WHERE email = :email";
+
+
     private final SimpleDriverDataSource simpleDriverDataSource;
     private DatabaseMapper databaseMapper;
 
     @Override
-    public Customer create(Customer customer) {
+    public Customer create(final Customer customer) {
         SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(simpleDriverDataSource)
                 .withTableName(CUSTOMER_TABLE)
                 .usingGeneratedKeyColumns(CUSTOMER_TABLE_PKEY);
@@ -36,36 +42,53 @@ public class CustomerDatabaseRepository implements CustomerRepository {
     }
 
     @Override
-    public int remove(String email) {
-        final var jdbcTemplate = new NamedParameterJdbcTemplate(simpleDriverDataSource);
-        var params = Map.of("email", email);
-        int removedResult = jdbcTemplate.update(DELETE_FROM_CUSTOMER_WHERE_EMAIL, params);
+    public int remove(final String email) {
+        NamedParameterJdbcTemplate jdbcTemplate = new NamedParameterJdbcTemplate(simpleDriverDataSource);
+
+        int removedResult = jdbcTemplate.update(
+                DELETE_FROM_CUSTOMER_WHERE_EMAIL,
+                Map.of("email", email));
+
         log.info("Rows removed: [{}]", removedResult);
         return removedResult;
     }
 
     @Override
-    public Optional<Customer> find(String email) {
-        final var jdbcTemplate = new NamedParameterJdbcTemplate(simpleDriverDataSource);
-        var params = Map.of("email", email);
-        return Optional.ofNullable(jdbcTemplate.queryForObject(SELECT_ONE_USER_WHERE_EMAIL, params, databaseMapper::mapCustomer));
+    public Optional<Customer> find(final String email) {
+        NamedParameterJdbcTemplate jdbcTemplate = new NamedParameterJdbcTemplate(simpleDriverDataSource);
+
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(
+                    SELECT_ONE_USER_WHERE_EMAIL,
+                    Map.of("email", email),
+                    databaseMapper::mapCustomer));
+        } catch (Exception e) {
+            log.warn("Trying to find non-existing customer with email: [{}]", email);
+            return Optional.empty();
+        }
     }
 
     @Override
-    public Optional<Customer> find(long id) {
-        final var jdbcTemplate = new NamedParameterJdbcTemplate(simpleDriverDataSource);
-        var params = Map.of("id", id);
-        Customer customer = jdbcTemplate.queryForObject(SELECT_ONE_CUSTOMER_WHERE_ID,
-                params,
-                databaseMapper::mapCustomer);
-        log.info("Found customer: [{}]", customer);
-        return Optional.ofNullable(customer);
+    public Optional<Customer> find(final long id) {
+        NamedParameterJdbcTemplate jdbcTemplate = new NamedParameterJdbcTemplate(simpleDriverDataSource);
+
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(
+                    SELECT_ONE_CUSTOMER_WHERE_ID,
+                    Map.of("id", id),
+                    databaseMapper::mapCustomer));
+        } catch (Exception e) {
+            log.warn("Trying to find non-existing customer with id: [{}]", id);
+            return Optional.empty();
+        }
     }
 
     @Override
     public List<Customer> findAll() {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(simpleDriverDataSource);
-        return jdbcTemplate.query(SELECT_ALL_CUSTOMERS, (rs, rowNum) -> databaseMapper.mapCustomer(rs, rowNum));
+        return jdbcTemplate.query(
+                SELECT_ALL_CUSTOMERS,
+                (rs, rowNum) -> databaseMapper.mapCustomer(rs, rowNum));
     }
 
     @Override

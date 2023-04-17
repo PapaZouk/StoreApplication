@@ -3,7 +3,6 @@ package pl.zajavka.infrastructure.database;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
@@ -24,24 +23,23 @@ import static pl.zajavka.infrastructure.configuration.DatabaseConfiguration.PROD
 public class ProductDatabaseRepository implements ProductRepository {
 
     public static final String SELECT_ALL_PRODUCT = "SELECT * FROM product";
-    public static final String INSERT_PRODUCT = "INSERT INTO product (product_code, product_name, product_price, adults_only, " +
-            "description, producer_id) VALUES (:productCode, :productName, :productPrice, :adultsOnly, :description, :producerId)";
     private static final String DELETE_FROM_PRODUCT = "DELETE FROM product WHERE 1 = 1";
     private static final String SELECT_WHERE_PRODUCT_CODE = "SELECT * FROM product WHERE product_code = :product_code";
-    private static final String DELETE_ALL_PRODUCT_WHERE_PRODUCT_CODE =
-            "DELETE FROM product WHERE product_code = :productCode";
+    private static final String DELETE_ALL_PRODUCT_WHERE_PRODUCT_CODE = "DELETE FROM product WHERE product_code = :productCode";
+    public static final String INSERT_PRODUCT = """
+            INSERT INTO product (product_code, product_name, product_price, adults_only, description, producer_id) 
+            VALUES (:productCode, :productName, :productPrice, :adultsOnly, :description, :producerId)
+            """;
     private SimpleDriverDataSource simpleDriverDataSource;
     private DatabaseMapper databaseMapper;
 
     @Override
-    public Product create(Product product) {
+    public Product create(final Product product) {
         SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(simpleDriverDataSource)
                 .withTableName(PRODUCT_TABLE)
                 .usingGeneratedKeyColumns(PRODUCT_TABLE_PKEY);
 
-//        Map<String, ?> params = databaseMapper.mapProduct(product);
-        Map<String, ?> params = databaseMapper.mapProduct(product);
-        Number productId = jdbcInsert.executeAndReturnKey(params);
+        Number productId = jdbcInsert.executeAndReturnKey(databaseMapper.mapProduct(product));
         return product.withId((long) productId.intValue());
     }
 
@@ -51,7 +49,7 @@ public class ProductDatabaseRepository implements ProductRepository {
     }
 
     @Override
-    public Optional<Product> find(String productCode) {
+    public Optional<Product> find(final String productCode) {
         NamedParameterJdbcTemplate jdbcTemplate = new NamedParameterJdbcTemplate(simpleDriverDataSource);
 
         try {
@@ -68,12 +66,15 @@ public class ProductDatabaseRepository implements ProductRepository {
     @Override
     public List<Product> findAll() {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(simpleDriverDataSource);
-        return jdbcTemplate.query(SELECT_ALL_PRODUCT, (rs, rowNum) -> databaseMapper.mapProduct(rs, rowNum));
+        return jdbcTemplate.query(
+                SELECT_ALL_PRODUCT,
+                (rs, rowNum) -> databaseMapper.mapProduct(rs, rowNum));
     }
 
     @Override
-    public void removeAllByProductCode(String productCode) {
-        new NamedParameterJdbcTemplate(simpleDriverDataSource)
-                .update(DELETE_ALL_PRODUCT_WHERE_PRODUCT_CODE, Map.of("productCode", productCode));
+    public void removeAllByProductCode(final String productCode) {
+        new NamedParameterJdbcTemplate(simpleDriverDataSource).update(
+                DELETE_ALL_PRODUCT_WHERE_PRODUCT_CODE,
+                Map.of("productCode", productCode));
     }
 }

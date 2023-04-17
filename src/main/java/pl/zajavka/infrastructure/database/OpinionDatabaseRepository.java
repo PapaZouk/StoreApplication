@@ -12,6 +12,7 @@ import pl.zajavka.domain.Opinion;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static pl.zajavka.infrastructure.configuration.DatabaseConfiguration.*;
 
@@ -23,12 +24,12 @@ public class OpinionDatabaseRepository implements OpinionRepository {
     public static final String SELECT_ALL_OPINION = "SELECT * FROM opinion";
     private static final String DELETE_FROM_OPINION = "DELETE FROM opinion WHERE 1 = 1";
     private static final String SELECT_ONE_OPINION_WHERE_EMAIL = """
-                SELECT * FROM opinion WHERE customer_id IN
-                    (SELECT customer_id FROM customer WHERE email = :email)
+                SELECT * FROM opinion AS op
+                    INNER JOIN customer AS cus ON cus.id = op.customer_id
+                    WHERE cus.email = :email
                 """;
-
-    public static final String REMOVED_OPINION_ROWS_FOR_CUSTOMER_WITH_EMAIL =
-            "Removed opinion rows for customer with email: [{}]";
+    public static final String DELETE_FROM_OPINION_WHERE_EMAIL = "DELETE FROM opinion WHERE customer_id IN " +
+            "(SELECT id FROM customer C WHERE email = :email)";
     private static final String DELETE_FROM_OPINION_WHERE_STARS_BETWEEN =
             "DELETE FROM opinion WHERE stars BETWEEN :min AND :max";
     private static final String SELECT_ALL_OPINION_WHERE_STARS_BETWEEN =
@@ -52,23 +53,31 @@ public class OpinionDatabaseRepository implements OpinionRepository {
                 .withTableName(OPINION_TABLE)
                 .usingGeneratedKeyColumns(OPINION_TABLE_PKEY);
 
-        Map<String, ?> params = databaseMapper.mapOpinion(opinion);
-        Number opinionId = jdbcInsert.executeAndReturnKey(params);
+        Number opinionId = jdbcInsert.executeAndReturnKey(databaseMapper.mapOpinion(opinion));
         return opinion.withId((long) opinionId.intValue());
     }
 
     @Override
-    public Opinion find(String email) {
+    public Optional<Opinion> find(String email) {
         final var jdbcTemplate = new NamedParameterJdbcTemplate(simpleDriverDataSource);
 
-        var params = Map.of("email", email);
-        return jdbcTemplate.queryForObject(SELECT_ONE_OPINION_WHERE_EMAIL, params, databaseMapper::mapOpinion);
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(
+                    SELECT_ONE_OPINION_WHERE_EMAIL,
+                    Map.of("email", email),
+                    databaseMapper::mapOpinion));
+        } catch (Exception e) {
+            log.warn("Trying to find non-existing opinion for email: [{}]", email);
+            return Optional.empty();
+        }
     }
 
     @Override
     public List<Opinion> findAll() {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(simpleDriverDataSource);
-        return jdbcTemplate.query(SELECT_ALL_OPINION, (rs, rowNum) -> databaseMapper.mapOpinion(rs, rowNum));
+        return jdbcTemplate.query(
+                SELECT_ALL_OPINION,
+                (rs, rowNum) -> databaseMapper.mapOpinion(rs, rowNum));
     }
 
     @Override
@@ -77,19 +86,51 @@ public class OpinionDatabaseRepository implements OpinionRepository {
     }
 
     @Override
+    public List<Opinion> findAll(int minStars, int maxStars) {
+        NamedParameterJdbcTemplate jdbcTemplate = new NamedParameterJdbcTemplate(simpleDriverDataSource);
+
+        List<Opinion> opinions = jdbcTemplate.query(
+                SELECT_ALL_OPINION_WHERE_STARS_BETWEEN,
+                Map.of("min", minStars, "max", maxStars),
+                (rs, rowNum) -> databaseMapper.mapOpinion(rs, rowNum));
+
+        log.info("Found: [{}] opinions with stars between [{}] and [{}]", opinions.size(), minStars, maxStars);
+        return opinions;
+    }
+
+    @Override
+    public List<Opinion> findAll(String productCode) {
+        NamedParameterJdbcTemplate jdbcTemplate = new NamedParameterJdbcTemplate(simpleDriverDataSource);
+
+        List<Opinion> opinions = jdbcTemplate.query(
+                SELECT_ALL_OPINION_WHERE_PRODUCT_CODE,
+                Map.of("productCode", productCode),
+                (rs, rowNum) -> databaseMapper.mapOpinion(rs, rowNum));
+
+        log.info("Found: [{}] opinions with product code: [{}]", opinions.size(), productCode);
+        return opinions;
+
+    }
+
+    @Override
     public int removeAll(String email) {
-        var jdbcTemplate = new NamedParameterJdbcTemplate(simpleDriverDataSource);
-        var params = Map.of("email", email);
-        int removedRows = jdbcTemplate.update(DELETE_FROM_OPINION_WHERE_EMAIL, params);
+        NamedParameterJdbcTemplate jdbcTemplate = new NamedParameterJdbcTemplate(simpleDriverDataSource);
+
+        int removedRows = jdbcTemplate.update(
+                DELETE_FROM_OPINION_WHERE_EMAIL,
+                Map.of("email", email));
+
         log.info("Removed opinion rows for customer with email: [{}]", removedRows);
         return removedRows;
     }
 
     @Override
     public int removeAll(int minStars, int maxStars) {
-        final var jdbcTemplate = new NamedParameterJdbcTemplate(simpleDriverDataSource);
-        var params = Map.of("min", minStars, "max", maxStars);
-        int removedRows = jdbcTemplate.update(DELETE_FROM_OPINION_WHERE_STARS_BETWEEN, params);
+        NamedParameterJdbcTemplate jdbcTemplate = new NamedParameterJdbcTemplate(simpleDriverDataSource);
+        int removedRows = jdbcTemplate.update(
+                DELETE_FROM_OPINION_WHERE_STARS_BETWEEN,
+                Map.of("min", minStars, "max", maxStars));
+
         log.info("Removed opinion rows: [{}] for opinions with stars between [{}] and [{}]",
                 removedRows,
                 minStars,
@@ -98,31 +139,10 @@ public class OpinionDatabaseRepository implements OpinionRepository {
     }
 
     @Override
-    public List<Opinion> findAll(int minStars, int maxStars) {
-        final var jdbcTemplate = new NamedParameterJdbcTemplate(simpleDriverDataSource);
-        var params = Map.of("min", minStars, "max", maxStars);
-        List<Opinion> opinions = jdbcTemplate.query(SELECT_ALL_OPINION_WHERE_STARS_BETWEEN,
-                params,
-                (rs, rowNum) -> databaseMapper.mapOpinion(rs, rowNum));
-        log.info("Found: [{}] opinions with stars between [{}] and [{}]", opinions.size(), minStars, maxStars);
-        return opinions;
-    }
-
-    @Override
-    public List<Opinion> findAll(String productCode) {
-        final var jdbcTemplate = new NamedParameterJdbcTemplate(simpleDriverDataSource);
-        var params = Map.of("productCode", productCode);
-        List<Opinion> opinions = jdbcTemplate.query(SELECT_ALL_OPINION_WHERE_PRODUCT_CODE,
-                params,
-                (rs, rowNum) -> databaseMapper.mapOpinion(rs, rowNum));
-        log.info("Found: [{}] opinions with product code: [{}]", opinions.size(), productCode);
-        return opinions;
-
-    }
-
-    @Override
     public void removeAllForPurchasesWithProductCode(String productCode) {
-        new NamedParameterJdbcTemplate(simpleDriverDataSource)
-                .update(REMOVE_ALL_OPINION_WHERE_PRODUCT_CODE, Map.of("productCode", productCode));
+        new NamedParameterJdbcTemplate(simpleDriverDataSource).update(
+                REMOVE_ALL_OPINION_WHERE_PRODUCT_CODE,
+                Map.of("productCode", productCode)
+        );
     }
 }

@@ -20,11 +20,6 @@ public class ProducerService {
         return producerDatabaseRepository.create(producer);
     }
 
-    public void removeAll() {
-        producerDatabaseRepository.removeAll();
-        productService.removeAll();
-    }
-
     @Transactional
     public Producer find(Long id) {
         return producerDatabaseRepository.find(id)
@@ -39,5 +34,10 @@ public class ProducerService {
 
     public List<Producer> findAll() {
         return producerDatabaseRepository.findAll();
+    }
+
+    public void removeAll() {
+        producerDatabaseRepository.removeAll();
+        productService.removeAll();
     }
 }

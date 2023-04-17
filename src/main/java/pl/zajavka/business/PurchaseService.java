@@ -16,10 +16,6 @@ public class PurchaseService {
 
     private PurchaseDatabaseRepository purchaseDatabaseRepository;
 
-    public void removeAll() {
-        purchaseDatabaseRepository.removeAll();
-    }
-
     @Transactional
     public Purchase create(Purchase purchase) {
         return purchaseDatabaseRepository.create(purchase);
@@ -30,26 +26,30 @@ public class PurchaseService {
                 .orElseThrow(() -> new RuntimeException("Purchase from user with email: [%s] is missing".formatted(email)));
     }
 
+    public List<Purchase> findAll() {
+        return purchaseDatabaseRepository.findAll();
+    }
+
+    public List<Purchase> findAll(final String email, final String productCode) {
+        return purchaseDatabaseRepository.findAll(email, productCode);
+    }
+
+    public List<Purchase> findAllByProductCode(final String productCode) {
+        return purchaseDatabaseRepository.findAll(productCode);
+    }
+
     @Transactional
-    public int remove(String email) {
-        return purchaseDatabaseRepository.remove(email);
+    public void remove(String email) {
+        purchaseDatabaseRepository.removeAll(email);
+    }
+
+    public void removeAll() {
+        purchaseDatabaseRepository.removeAll();
     }
 
     @Transactional
     public int removeAll(String email) {
         return purchaseDatabaseRepository.removeAll(email);
-    }
-
-    public List<Purchase> findAll(String email, String productCode) {
-        return purchaseDatabaseRepository.findAll(email, productCode);
-    }
-
-    public List<Purchase> findAll() {
-        return purchaseDatabaseRepository.findAll();
-    }
-
-    public List<Purchase> findAllByProductCode(String productCode) {
-        return purchaseDatabaseRepository.findAll(productCode);
     }
 
     public void removeAllByProductCode(String productCode) {

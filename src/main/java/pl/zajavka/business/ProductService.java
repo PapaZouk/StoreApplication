@@ -21,10 +21,6 @@ public class ProductService {
         return productDatabaseRepository.create(product);
     }
 
-    public void removeAll() {
-        productDatabaseRepository.removeAllByProductCode();
-    }
-
     public Product find(String productCode) {
         return productDatabaseRepository.find(productCode)
                 .orElseThrow(() -> new RuntimeException("Product with code: [%s] is missing".formatted(productCode)));
@@ -32,6 +28,10 @@ public class ProductService {
 
     public List<Product> findAll() {
         return productDatabaseRepository.findAll();
+    }
+
+    public void removeAll() {
+        productDatabaseRepository.removeAllByProductCode();
     }
 
     public void removeAllWithProductCode(String productCode) {

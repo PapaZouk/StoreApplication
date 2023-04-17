@@ -13,8 +13,7 @@ import pl.zajavka.infrastructure.configuration.ApplicationConfiguration;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 @SpringJUnitConfig(classes = ApplicationConfiguration.class)
@@ -37,7 +36,7 @@ public class OpinionDatabaseRepositoryTest {
         assertNotNull(productService);
         assertNotNull(customerService);
 
-        reloadDataService.removeAllDatabaseData();
+        reloadDataService.reloadData();
     }
 
     @Test
@@ -130,5 +129,21 @@ public class OpinionDatabaseRepositoryTest {
 
         // then
         assertEquals(2, result.size());
+    }
+
+    @Test
+    @DisplayName("Should fail finding opinion for provided email")
+    void thatFindOpinionWillFail() {
+        // given
+        String someEmail = "someEmail@example.xyz";
+
+        // when
+        RuntimeException exception = assertThrows(
+                RuntimeException.class,
+                () -> opinionService.find(someEmail)
+        );
+
+        // then
+        assertEquals("Opinion for email: [%s] doesn't exists".formatted(someEmail), exception.getMessage());
     }
 }

@@ -7,9 +7,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import pl.zajavka.business.*;
+import pl.zajavka.business.OpinionService;
+import pl.zajavka.business.ProductService;
+import pl.zajavka.business.PurchaseService;
+import pl.zajavka.business.ReloadDataService;
 import pl.zajavka.domain.Opinion;
-import pl.zajavka.domain.Product;
 import pl.zajavka.domain.Purchase;
 import pl.zajavka.infrastructure.configuration.ApplicationConfiguration;
 

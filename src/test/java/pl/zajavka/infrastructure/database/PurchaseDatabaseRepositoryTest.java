@@ -14,7 +14,6 @@ import pl.zajavka.infrastructure.configuration.ApplicationConfiguration;
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static pl.zajavka.infrastructure.configuration.DatabaseConfiguration.CUSTOMER_WITH_EMAIL_IS_TOO_OLD;
 
 @Slf4j
 @SpringJUnitConfig(classes = ApplicationConfiguration.class)
@@ -79,7 +78,7 @@ public class PurchaseDatabaseRepositoryTest {
 
         // then
         assertEquals(
-                CUSTOMER_WITH_EMAIL_IS_TOO_OLD.formatted(customer.getEmail()),
+                "Could not remove purchase because customer with email: [%s] is too old".formatted(customer.getEmail()),
                 exception.getMessage()
         );
     }

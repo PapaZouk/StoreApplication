@@ -62,6 +62,7 @@ public class CustomerService {
         log.info("Successfully removed purchases: [{}]", removeResult2);
 
         if (isOlderThan40(customer)) {
+            log.warn("Unable to remove customer with email: [{}] because he/she is older than 40", email);
             throw new RuntimeException(CUSTOMER_AGE_WITH_EMAIL_S_IS_OVER_40.formatted(email));
         }
 
@@ -80,7 +81,7 @@ public class CustomerService {
             try {
                 removedCustomers += remove(email);
             } catch (RuntimeException e) {
-                log.error("Error while removing customer with email: [{}], reason: [{}]",
+                log.warn("Error while removing customer with email: [{}], reason: [{}]",
                         email, e.getMessage());
             }
         }

@@ -51,4 +51,5 @@ public class ReloadDataServiceTest {
         assertEquals(50, allProducts.size());
         assertEquals(300, allPurchases.size());
     }
+
 }
