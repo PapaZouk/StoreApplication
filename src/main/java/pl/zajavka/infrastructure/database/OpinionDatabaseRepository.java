@@ -33,6 +33,15 @@ public class OpinionDatabaseRepository implements OpinionRepository {
             "DELETE FROM opinion WHERE stars BETWEEN :min AND :max";
     private static final String SELECT_ALL_OPINION_WHERE_STARS_BETWEEN =
             "SELECT * FROM opinion WHERE stars BETWEEN :min AND :max";
+    private static final String SELECT_ALL_OPINION_WHERE_PRODUCT_CODE = """
+            SELECT * FROM opinion AS op
+                INNER JOIN product AS prod ON prod.id = op.product_id
+                WHERE prod.product_code = :productCode
+            """;
+    private static final String REMOVE_ALL_OPINION_WHERE_PRODUCT_CODE = """
+            DELETE FROM opinion AS op WHERE op.product_id IN
+                (SELECT op.product_id FROM product AS prod WHERE prod.product_code = :productCode)
+            """;
 
     private final SimpleDriverDataSource simpleDriverDataSource;
     private final DatabaseMapper databaseMapper;
@@ -97,5 +106,23 @@ public class OpinionDatabaseRepository implements OpinionRepository {
                 (rs, rowNum) -> databaseMapper.mapOpinion(rs, rowNum));
         log.info("Found: [{}] opinions with stars between [{}] and [{}]", opinions.size(), minStars, maxStars);
         return opinions;
+    }
+
+    @Override
+    public List<Opinion> findAll(String productCode) {
+        final var jdbcTemplate = new NamedParameterJdbcTemplate(simpleDriverDataSource);
+        var params = Map.of("productCode", productCode);
+        List<Opinion> opinions = jdbcTemplate.query(SELECT_ALL_OPINION_WHERE_PRODUCT_CODE,
+                params,
+                (rs, rowNum) -> databaseMapper.mapOpinion(rs, rowNum));
+        log.info("Found: [{}] opinions with product code: [{}]", opinions.size(), productCode);
+        return opinions;
+
+    }
+
+    @Override
+    public void removeAllForPurchasesWithProductCode(String productCode) {
+        new NamedParameterJdbcTemplate(simpleDriverDataSource)
+                .update(REMOVE_ALL_OPINION_WHERE_PRODUCT_CODE, Map.of("productCode", productCode));
     }
 }

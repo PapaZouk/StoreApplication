@@ -39,7 +39,17 @@ public class PurchaseDatabaseRepository implements PurchaseRepository {
                 WHERE cus.email = :email
                 AND prod.product_code = :productCode
             """;
-//    private static final String SELECT_ALL_WHERE_CUSTOMER_EMAIL_AND_PRODUCT_CODE = """
+    private static final String SELECT_ALL_PURCHASE_WHERE_PRODUCT_CODE = """
+            SELECT * FROM purchase AS pur
+                INNER JOIN product AS prod ON prod.id = pur.product_id
+                WHERE prod.product_code = :productCode
+            """;
+    private static final String REMOVE_ALL_PURCHASE_WHERE_PRODUCT_CODE = """
+            DELETE FROM purchase AS pur WHERE pur.product_id IN
+                (SELECT pur.product_id FROM product AS prod WHERE prod.product_code = :productCode)
+            """;;
+
+    //    private static final String SELECT_ALL_WHERE_CUSTOMER_EMAIL_AND_PRODUCT_CODE = """
 //            SELECT * FROM purchase AS pur
 //                INNER JOIN customer AS cus ON cus.id = pur.customer_id
 //                INNER JOIN product AS prod ON cus.id = prod.product_id
@@ -76,6 +86,23 @@ public class PurchaseDatabaseRepository implements PurchaseRepository {
     public List<Purchase> findAll() {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(simpleDriverDataSource);
         return jdbcTemplate.query(SELECT_ALL_PURCHASE, (rs, rowNum) -> databaseMapper.mapPurchase(rs, rowNum));
+    }
+
+    @Override
+    public List<Purchase> findAll(String productCode) {
+        final var jdbcTemplate = new NamedParameterJdbcTemplate(simpleDriverDataSource);
+        final var params = Map.of("productCode", productCode);
+        List<Purchase> purchases = jdbcTemplate.query(SELECT_ALL_PURCHASE_WHERE_PRODUCT_CODE,
+                params,
+                (rs, rowNum) -> databaseMapper.mapPurchase(rs, rowNum));
+        log.info("Found: [{}] purchases with product code: [{}]", purchases.size(), productCode);
+        return purchases;
+    }
+
+    @Override
+    public void removeAllForPurchasesWithProductCode(String productCode) {
+        new NamedParameterJdbcTemplate(simpleDriverDataSource)
+                .update(REMOVE_ALL_PURCHASE_WHERE_PRODUCT_CODE, Map.of("productCode", productCode));
     }
 
     @Override

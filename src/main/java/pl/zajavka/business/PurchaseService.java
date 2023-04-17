@@ -47,4 +47,12 @@ public class PurchaseService {
     public List<Purchase> findAll() {
         return purchaseDatabaseRepository.findAll();
     }
+
+    public List<Purchase> findAllByProductCode(String productCode) {
+        return purchaseDatabaseRepository.findAll(productCode);
+    }
+
+    public void removeAllByProductCode(String productCode) {
+        purchaseDatabaseRepository.removeAllForPurchasesWithProductCode(productCode);
+    }
 }

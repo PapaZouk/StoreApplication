@@ -17,4 +17,8 @@ public interface OpinionRepository {
     List<Opinion> findAll();
 
     List<Opinion> findAll(int minStars, int maxStars);
+
+    List<Opinion> findAll(String productCode);
+
+    void removeAllForPurchasesWithProductCode(String productCode);
 }

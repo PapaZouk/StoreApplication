@@ -8,9 +8,11 @@ import java.util.Optional;
 public interface ProductRepository {
     Product create(Product product);
 
-    void removeAll();
+    void removeAllByProductCode();
 
     Optional<Product> find(String productCode);
 
     List<Product> findAll();
+
+    void removeAllByProductCode(String productCode);
 }

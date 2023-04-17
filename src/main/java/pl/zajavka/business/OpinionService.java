@@ -58,4 +58,12 @@ public class OpinionService {
     public List<Opinion> findAll() {
         return opinionDatabaseRepository.findAll();
     }
+
+    public List<Opinion> findAllByProductCode(String productCode) {
+        return opinionDatabaseRepository.findAll(productCode);
+    }
+
+    public void removeAllByProductCode(String productCode) {
+        opinionDatabaseRepository.removeAllForPurchasesWithProductCode(productCode);
+    }
 }

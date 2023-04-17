@@ -13,6 +13,8 @@ import java.util.List;
 public class ProductService {
 
     private ProductDatabaseRepository productDatabaseRepository;
+    private OpinionService opinionService;
+    private PurchaseService purchaseService;
 
     @Transactional
     public Product create(Product product) {
@@ -20,7 +22,7 @@ public class ProductService {
     }
 
     public void removeAll() {
-        productDatabaseRepository.removeAll();
+        productDatabaseRepository.removeAllByProductCode();
     }
 
     public Product find(String productCode) {
@@ -30,5 +32,11 @@ public class ProductService {
 
     public List<Product> findAll() {
         return productDatabaseRepository.findAll();
+    }
+
+    public void removeAllWithProductCode(String productCode) {
+        opinionService.removeAllByProductCode(productCode);
+        purchaseService.removeAllByProductCode(productCode);
+        productDatabaseRepository.removeAllByProductCode(productCode);
     }
 }
